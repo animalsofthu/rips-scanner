@@ -162,6 +162,7 @@ $F_SECURING_XSS = [
   'htmlentities',
   'htmlspecialchars',
   'highlight_string',
+  'escape',
 ];
 
 // securing functions for SQLi
