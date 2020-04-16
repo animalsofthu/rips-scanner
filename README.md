@@ -29,12 +29,13 @@ See original php-rips scan html form (index.php) for more options.
 | Options | Value |
 | --- | --- |
 | loc | target scan file/folder <path> |
-| subdir | recurse subdirs \[0\|1] |
-| ignore_warning | \[0\|1] |
-| vector | scan vectors \[all\|...] |
+| subdir | recurse subdirs \[0/1] |
+| ignore_warning | \[0/1\] |
+| vector | scan vectors \[all/...] |
 | verbosity | log verbosity \[0-9] |
-| treestyle | html output style \[0\|1] |
-| stylesheet | html output stylesheet \[ayti\|...] |
+| treestyle | html output style \[0/1] |
+| stylesheet | html output stylesheet \[ayti/...] |
+| register_globals | scan as if register_globals were turned on |
 
 Example: recursively scan ./code for all vuln. classes
 ```
@@ -86,27 +87,3 @@ Note: in cli-mode argv wil be parsed into `$_POST` therefore allowing you to set
 
 ## Development
 The `community` branch of RIPS is forked from version 0.55 and is not officially supported by RIPS Technologies.
-
-A completely rebuilt solution is available from RIPS Technologies that overcomes fundamental limitations in the open source version and performs state-of-the-art security analysis.
-
-| Compared Feature | RIPS 0.5 | Next Generation |
-| --- | --- | --- |
-| Supported PHP Language | PHP 3-4, no OOP | all, PHP 3-7 |
-| Static Code Analysis | Only Token-based | Full |
-| Analysis Precision | Low | Very High |
-| PHP Version Specific Analysis | No | Yes |
-| Scales to Large Codesizes | No | Yes |
-| API / CLI Support | No | Yes |
-| Continuous Integration | No | Yes |
-| Compliance / Standards | No | Yes |
-| Store Analysis Results | No | Yes |
-| Export Analysis Results | No | Yes |
-| Issue Review System | No | Yes |
-| Realtime Results | No | Yes |
-| Vulnerability Trends | No | Yes |
-| Detects Latest Risks | No | Yes |
-| Detects Complex Vulnerabilities | Limited | Yes |
-| Supported Issue Types | 15 | >140 |
-| Speed | Fast | Fast |
-
-Learn more about the next generation of RIPS at https://www.ripstech.com/product/datasheets/.

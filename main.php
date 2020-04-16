@@ -40,6 +40,8 @@ You should have received a copy of the GNU General Public License along with thi
 	$info = array();
 	$scanned_files = array();
 
+  define('SCAN_REGISTER_GLOBALS', isset($_POST['register_globals']));  // EXPERIMENTAL: scan as if register_globals=on
+
 	if(!empty($_POST['loc']))
 	{
 		$location = realpath($_POST['loc']);

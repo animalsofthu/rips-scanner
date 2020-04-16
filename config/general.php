@@ -61,8 +61,6 @@ define('MAX_ARRAY_ELEMENTS', 50);    // maximum array(1,2,3,4,...) elements to b
 define('MAX_ARRAY_KEYS', 10);      // maximum array key $array[1][2][3][4]..
 define('PRELOAD_SHOW_LINE', 500);    // every X line a preloader information is added
 
-define('SCAN_REGISTER_GLOBALS', FALSE);  // EXPERIMENTAL: scan as if register_globals=on
-
 $FILETYPES = [            // filetypes to scan
   '.php',
   '.inc',

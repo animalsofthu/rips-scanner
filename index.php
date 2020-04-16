@@ -19,6 +19,8 @@ include 'config/general.php';
 if (defined("MODE_CLI"))
 	parse_str(implode('&', array_slice($argv, 1)), $_POST);				// parse commandline into $_POST
 
+define('SCAN_REGISTER_GLOBALS', isset($_POST['register_globals']));  // EXPERIMENTAL: scan as if register_globals=on
+
 ?><html>
 <head>
 	<meta charset="UTF-8">
