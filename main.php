@@ -398,8 +398,6 @@ You should have received a copy of the GNU General Public License along with thi
 			}
 			echo '</table><hr />';
 		}
-
-		echo '<center><a href="https://www.ripstech.com/latest/" target="_blank" style="text-decoration:none;font-size:11pt" onmouseover="this.style.color=\'white\';" onmouseout="this.style.color=\'#DFDFDF\';">Get the next generation of <font color="#FC4">RIPS</font><br />with state-of-the-art code analysis!</a></center><hr />';
 	}
 		?>
 		<table class="textcolor" width="100%">
