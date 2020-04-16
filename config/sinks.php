@@ -337,6 +337,13 @@ $F_DATABASE = [
   'sqlite_unbuffered_query' => [[1, 2], $F_SECURING_SQL],
   'sybase_query'            => [[1], $F_SECURING_SQL],
   'sybase_unbuffered_query' => [[1], $F_SECURING_SQL],
+
+  'raw'         => [[1], []],
+  'fetchSelect' => [[1], []],
+  'retrieve'    => [[1], []],
+  'exec'        => [[1], []],
+  'select'      => [[1], []],
+  'selectFirst' => [[1], []],
 ];
 
 // xpath injection

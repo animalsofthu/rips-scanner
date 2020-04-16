@@ -120,6 +120,10 @@ $F_SECURING_STRING = [
   'gethostname',
   'gethostbynamel',
   'gethostbyname',
+
+  'strtotime',
+  'date',
+  'substr',
 ];
 
 // functions that insecures the string again
@@ -177,6 +181,7 @@ $F_SECURING_SQL = [
   'sqlite_escape_string',
   'sqlite_udf_encode_binary',
   'cubrid_real_escape_string',
+  'quote',
 ];
 
 // securing functions for RCE with e-modifier in preg_**
