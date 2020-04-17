@@ -10,8 +10,8 @@ error_reporting(E_ALL);
 
 chdir('c:/Users/User/PhpstormProjects/rips-scanner');
 
-$old = json_decode(file_get_contents('old.json'), FALSE);
-$new = json_decode(file_get_contents('new.json'), FALSE);
+$old = json_decode(file_get_contents('old.json'), TRUE);
+$new = json_decode(file_get_contents('new.json'), TRUE);
 ?>
 <!doctype html>
 <html lang="en" dir="ltr">
@@ -69,11 +69,11 @@ $new = json_decode(file_get_contents('new.json'), FALSE);
   </thead>
   <tbody>
   <?php foreach ($old as $key => $value): ?>
-    <?php $change = 100 - $old->{$key} / $new->{$key} * 100 ?>
+    <?php $change = ($old[$key] - $new[$key]) / $old[$key] * -100 ?>
     <tr>
       <th><?= $key ?></th>
-      <td><?= $old->{$key} ?></td>
-      <td><?= $new->{$key} ?></td>
+      <td><?= $old[$key] ?></td>
+      <td><?= $new[$key] ?></td>
       <td class="<?= $change ? ($change < 0 ? 'ok' : 'nok') : 'no' ?>"><?php
         printf('%+.02f%%', $change);
         ?></td>
