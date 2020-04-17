@@ -7,16 +7,12 @@ error_reporting(E_ALL);
 array_shift($argv);
 
 if (!$argv) {
-  $argv = ['php://stdin', 'report.html'];
+  $argv = ['php://stdin'];
 }
 
 $stats = [];
 
 foreach ($argv as $arg) {
-  if (!is_file($arg) || !is_readable($arg)) {
-    continue;
-  }
-
   $file = file_get_contents($arg);
 
   if (preg_match('%^<div id="stats" class="stats">$(.*?)^</div>$%msu', $file, $match)) {
