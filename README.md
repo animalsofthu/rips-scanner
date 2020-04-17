@@ -16,13 +16,40 @@ A static source code analyser for vulnerabilities in PHP scripts
 ## Usage
 Follow the instructions on the main page.
 
+## JSON Stats
+### Usage
+```shell script
+php index.php register_globals=1 verbosity=2 "loc=/var/www/livestocker/web/index.php" | php rips_stats.php
+```
+
+### Output
+```json
+{
+    "code_execution": 3,
+    "file_disclosure": 1,
+    "file_inclusion": 3,
+    "file_manipulation": 2,
+    "sql_injection": 28,
+    "cross-site_scripting": 15,
+    "possible_flow_control": 3,
+    "reflection_injection": 1,
+    "sum": 56,
+    "scanned_files": 1,
+    "considered_sinks": 303,
+    "user-defined_functions": 387,
+    "unique_sources": 21,
+    "sensitive_sinks": 510,
+    "scan_time": 0.803
+}
+```
+
 ## Command Line Interface - CLI
 
 #### Usage
 
 See original php-rips scan html form (index.php) for more options.
 
-```
+```shell script
   php index.php [option=value]
 ```
 
@@ -38,7 +65,7 @@ See original php-rips scan html form (index.php) for more options.
 | register_globals | scan as if register_globals were turned on |
 
 Example: recursively scan ./code for all vuln. classes
-```
+```shell script
   php index.php loc=./code subdirs=1 vector=all verbosity=2
 ```
 
@@ -50,28 +77,28 @@ Note: in cli-mode argv wil be parsed into `$_POST` therefore allowing you to set
 2. configure (multiple) scm to clone both this repository and the source you want to scan to distinct folders
 3. add build step: execute shell
 
-	```bash
-	# config - remove this if you configure it via jenkins parameterized builds
-	PATH_RIPS=rips-scanner
-	PATH_REPORT=report
-	FILE_REPORT=report.html
-	PATH_TARGET=code
-	RIPS_RECURSE_SUBDIR=1
-	RIPS_VECTOR=all
-	RIPS_VERBOSITY=2
-	# copy dependencies
-	mkdir -p report
-	cp -r rips-scanner/css report
-	cp -r rips-scanner/js report
-	# run analysis
-	echo "========================================================="
-	echo "[**] running scan ... $PATH_TARGET"
-	echo "========================================================="
-	php $PATH_RIPS/index.php ignore_warning=1 loc=$PATH_TARGET subdirs=$RIPS_RECURSE_SUBDIR vector=$RIPS_VECTOR verbosity=$RIPS_VERBOSITY treestyle=1 stylesheet=ayti > $PATH_REPORT/$FILE_REPORT
-	echo "========================================================="
-	echo "[**] scan done ... check out $PATH_REPORT/$FILE_REPORT"
-	echo "========================================================="
-	```
+    ```shell script
+    # config - remove this if you configure it via jenkins parameterized builds
+    PATH_RIPS=rips-scanner
+    PATH_REPORT=report
+    FILE_REPORT=report.html
+    PATH_TARGET=code
+    RIPS_RECURSE_SUBDIR=1
+    RIPS_VECTOR=all
+    RIPS_VERBOSITY=2
+    # copy dependencies
+    mkdir -p report
+    cp -r rips-scanner/css report
+    cp -r rips-scanner/js report
+    # run analysis
+    echo "========================================================="
+    echo "[**] running scan ... $PATH_TARGET"
+    echo "========================================================="
+    php $PATH_RIPS/index.php ignore_warning=1 loc=$PATH_TARGET subdirs=$RIPS_RECURSE_SUBDIR vector=$RIPS_VECTOR verbosity=$RIPS_VERBOSITY treestyle=1 stylesheet=ayti > $PATH_REPORT/$FILE_REPORT
+    echo "========================================================="
+    echo "[**] scan done ... check out $PATH_REPORT/$FILE_REPORT"
+    echo "========================================================="
+    ```
 
 4. add build step: execute python
 
