@@ -16,6 +16,8 @@ if (!$argv) {
 
 $stats = [];
 
+$unknown = 0;
+
 foreach ($argv as $arg) {
   $file = file_get_contents($arg);
 
@@ -29,7 +31,19 @@ foreach ($argv as $arg) {
     unset($lines[1]);
 
     foreach ($lines as $line) {
-      [$label, $value] = preg_split('%:</td>[\s\r\n]*<td>%u', $line);
+      $columns = preg_split('%:</td>[\s\r\n]*<td>%u', $line);
+
+      if (!$columns) {
+        continue;
+      }
+
+      if (2 === count($columns)) {
+        [$label, $value] = $columns;
+      }
+      else {
+        $label = 'Unknown ' . ++$unknown;
+        $value = $columns;
+      }
 
       $label = trim(strip_tags($label));
       $value = (float) trim(strip_tags($value));
