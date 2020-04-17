@@ -21,7 +21,7 @@ $unknown = 0;
 foreach ($argv as $arg) {
   $file = file_get_contents($arg);
 
-  if (preg_match('%^<div id="stats" class="stats">$(.*?)^</div>$%msu', $file, $match)) {
+  if (preg_match('%^<div id="stats" class="stats"[^>]*?>$(.*?)^</div>$%msu', $file, $match)) {
     $match = preg_replace('%<(a|canvas|div|table|tr|td)[^>]+?>%', '<$1>', $match[1]);
     $match = strip_tags($match, '<td><tr>');
     $lines = explode('<tr>', $match);
