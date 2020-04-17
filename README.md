@@ -63,6 +63,7 @@ See original php-rips scan html form (index.php) for more options.
 | treestyle | html output style \[0/1] |
 | stylesheet | html output stylesheet \[ayti/...] |
 | register_globals | scan as if register_globals were turned on |
+| statnow | JSON encoded stats instead of HTML report |
 
 Example: recursively scan ./code for all vuln. classes
 ```shell script

@@ -140,8 +140,11 @@ class Scanner {
 
     // preload output
     echo $GLOBALS['fit'] . '|' . $GLOBALS['file_amount'] . '|' . $this->file_pointer . ' (tokenizing)|' . $GLOBALS['timeleft'] . '|' . "\n";
-    @ob_flush();
-    flush();
+
+    if (empty($_POST['statnow'])) {
+      @ob_flush();
+      flush();
+    }
 
     // tokenizing
     $tokenizer = new Tokenizer($this->file_pointer);
@@ -880,8 +883,11 @@ class Scanner {
         // add preloader info for big files
         if (0 == $line_nr % PRELOAD_SHOW_LINE) {
           echo $GLOBALS['fit'] . '|' . $GLOBALS['file_amount'] . '|' . $this->file_pointer . ' (line ' . $line_nr . ')|' . $GLOBALS['timeleft'] . '|' . "\n";
-          @ob_flush();
-          flush();
+
+          if (empty($_POST['statnow'])) {
+            @ob_flush();
+            flush();
+          }
         }
 
         # debug
@@ -1584,8 +1590,11 @@ class Scanner {
                     }
 
                     echo $GLOBALS['fit'] . '|' . $GLOBALS['file_amount'] . '|' . $this->file_pointer . '|' . $GLOBALS['timeleft'] . '|' . "\n";
-                    @ob_flush();
-                    flush();
+
+                    if (empty($_POST['statnow'])) {
+                      @ob_flush();
+                      flush();
+                    }
 
                     $this->comment = basename($inc_file);
 

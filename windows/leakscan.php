@@ -93,8 +93,11 @@ if (!empty($_POST['loc'])) {
     $file_scanning = $files[$fit];
 
     echo ($fit) . '|' . $file_amount . '|' . $file_scanning . '|' . $timeleft . '|' . "\n";
-    @ob_flush();
-    flush();
+
+    if (empty($_POST['statnow'])) {
+      @ob_flush();
+      flush();
+    }
 
     $scan = new Scanner($file_scanning, $scan_functions, [], []);
     $scan->parse();
@@ -104,8 +107,11 @@ if (!empty($_POST['loc'])) {
     $timeleft = round(($overall_time / ($fit + 1)) * ($file_amount - $fit + 1), 2);
   }
   echo "STATS_DONE.\n";
-  @ob_flush();
-  flush();
+
+  if (empty($_POST['statnow'])) {
+    @ob_flush();
+    flush();
+  }
 }
 
 $elapsed = microtime(TRUE) - $start;

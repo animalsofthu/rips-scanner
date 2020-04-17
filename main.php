@@ -73,13 +73,11 @@ if (!empty($_POST['loc'])) {
       die('warning:' . count($files));
     }
   }
+  elseif (is_file($location) && 0 !== strpos(basename($location), 'x_') && in_array(pathinfo($location, PATHINFO_EXTENSION), $FILETYPES) && !in_array(basename($location), $SKIPFILES)) {
+    $files[0] = $location;
+  }
   else {
-    if (is_file($location) && in_array(substr($location, strrpos($location, '.')), $FILETYPES) && !in_array(basename($location), $SKIPDIRS) && !in_array(basename($location), $SKIPFILES)) {
-      $files[0] = $location;
-    }
-    else {
-      $files = [];
-    }
+    $files = [];
   }
 
   // SCAN
@@ -214,8 +212,11 @@ if (!empty($_POST['loc'])) {
       $file_scanning = $files[$fit];
 
       echo ($fit) . '|' . $file_amount . '|' . $file_scanning . '|' . $timeleft . '|' . "\n";
-      @ob_flush();
-      flush();
+
+      if (empty($_POST['statnow'])) {
+        @ob_flush();
+        flush();
+      }
 
       // scan
       $scan = new Scanner($file_scanning, $scan_functions, $info_functions, $source_functions);
@@ -231,9 +232,11 @@ if (!empty($_POST['loc'])) {
     if (defined('MODE_CLI')) {
       echo "\n</div>";
     }    //hide metadata
-    @ob_flush();
-    flush();
 
+    if (empty($_POST['statnow'])) {
+      @ob_flush();
+      flush();
+    }
   }
   // SEARCH
   else {
