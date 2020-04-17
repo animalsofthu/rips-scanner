@@ -16,7 +16,7 @@ def getargs():
     args = []
     options = []
     if len(sys.argv) <= 1:
-        print """Usage: %s [<report.html>, ...]"""%sys.argv[0]
+        print("""Usage: %s [<report.html>, ...]"""%sys.argv[0])
         exit(1)
     for a in sys.argv[1:]:
         if a.startswith("--"):
@@ -39,9 +39,9 @@ def main(args, options=[]):
     stats={}
 
     for file in args:
-        print "[*] processing '%s'"%file
+        print("[*] processing '%s'"%file)
         if not os.path.isfile(file):
-            print "[!!] file not found/not a file - '%s'"%file
+            print("[!!] file not found/not a file - '%s'"%file)
             continue
         with open(file,'r') as f:
             data = None
@@ -55,7 +55,7 @@ def main(args, options=[]):
                 if STATS_END in line:
                     break
             if data:
-                print "[**] extracting data"
+                print("[**] extracting data")
                 x = re.findall(r'Sum:</td><td>(\d+)</td>', data)
                 stats['hits'] = int(x[0]) if x else 0    # if Sum: is missing, there were not vulns.
                 stats['cats'] = re.findall(r'catshow\(\'([^\']+)', data)
@@ -69,8 +69,8 @@ def main(args, options=[]):
 
 
         stats['dummy']=''
-        print "[***] Results"
-        print """[    ] Scanned Files:           %(Scanned files:)20s
+        print("[***] Results")
+        print("""[    ] Scanned Files:           %(Scanned files:)20s
 [    ] Include Success:         %(Include success:)20s
 [    ] Time Elapsed:            %(scantime)19ss
 
@@ -80,9 +80,9 @@ def main(args, options=[]):
 [    ] Sensitive sinks:         %(Sensitive sinks:)20s
 
 [    ] Hits:                    %(hits)20s
-[    ] Categories:              %(num_cats)20s"""%stats
+[    ] Categories:              %(num_cats)20s"""%stats)
         for c in stats.get("cats",[]):
-            print "   %50s"%("%s   [+]"%c)
+            print("   %50s"%("%s   [+]"%c))
         errcode+=stats.get('hits',0)
 
 
