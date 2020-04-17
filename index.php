@@ -27,7 +27,8 @@ if (defined('MODE_CLI')) {
   parse_str(implode('&', array_slice($argv, 1)), $_POST);
 }        // parse commandline into $_POST
 
-define('SCAN_REGISTER_GLOBALS', isset($_POST['register_globals']));  // EXPERIMENTAL: scan as if register_globals=on
+// EXPERIMENTAL: scan as if register_globals=on
+define('SCAN_REGISTER_GLOBALS', array_key_exists('register_globals', $_POST) ? !empty($_POST['register_globals']) : TRUE);
 
 ?>
 <html>

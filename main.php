@@ -47,7 +47,8 @@ $output = [];
 $info = [];
 $scanned_files = [];
 
-define('SCAN_REGISTER_GLOBALS', isset($_POST['register_globals']));  // EXPERIMENTAL: scan as if register_globals=on
+// EXPERIMENTAL: scan as if register_globals=on
+define('SCAN_REGISTER_GLOBALS', array_key_exists('register_globals', $_POST) ? !empty($_POST['register_globals']) : TRUE);
 
 if (!empty($_POST['loc'])) {
   $mbb_dir = realpath($_POST['loc']) . '/web/MobilGateAppBackend/builds';
@@ -65,7 +66,7 @@ if (!empty($_POST['loc'])) {
   $location = realpath($_POST['loc']);
 
   if (is_dir($location)) {
-    $scan_subdirs = $_POST['subdirs'] ?? FALSE;
+    $scan_subdirs = $_POST['subdirs'] ?? TRUE;
     $files = read_recursiv($location, $scan_subdirs);
 
     if (!isset($_POST['ignore_warning']) && count($files) > WARNFILES) {
@@ -90,7 +91,7 @@ if (!empty($_POST['loc'])) {
     $file_sinks_count = [];
     $count_xss = $count_sqli = $count_fr = $count_fa = $count_fi = $count_exec = $count_code = $count_eval = $count_xpath = $count_ldap = $count_con = $count_other = $count_pop = $count_inc = $count_inc_fail = $count_header = $count_sf = $count_ri = 0;
 
-    $verbosity = $_POST['verbosity'] ?? 1;
+    $verbosity = $_POST['verbosity'] ?? 2;
     $scan_functions = [];
     $info_functions = Info::$F_INTEREST;
 
@@ -468,5 +469,5 @@ $elapsed = microtime(TRUE) - $start;
 
 <?php
 // scan result
-@printoutput($output, $_POST['treestyle']);
+@printoutput($output, $_POST['treestyle'] ?? 2);
 ?>
