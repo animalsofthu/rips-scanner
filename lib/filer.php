@@ -35,33 +35,22 @@ function read_recursiv(string $path, bool $scan_subdirs): array {
 
   $result = [];
 
-  $handle = opendir($path);
+  foreach (scandir($path, SCANDIR_SORT_NONE) as $file) {
+    if ('.' === $file || '..' === $file) {
+      continue;
+    }
 
-  if ($handle) {
-    while (FALSE !== ($file = readdir($handle))) {
-      if ('.' !== $file && '..' !== $file) {
-        $name = $path . '/' . $file;
-        if ($scan_subdirs && is_dir($name)) {
-          if (!in_array($file, $SKIPDIRS)) {
-            $ar = read_recursiv($name, TRUE);
+    $name = $path . '/' . $file;
 
-            foreach ($ar as $value) {
-              if (in_array(substr($value, strrpos($value, '.')), $FILETYPES) && !in_array($value, $SKIPFILES)) {
-                // if (in_array(substr($value, strrpos($value, '.')), $FILETYPES)) {
-                $result[] = $value;
-              }
-            }
-          }
-        }
-        else {
-          if (0 !== strpos($name, 'x_') && in_array(substr($name, strrpos($name, '.')), $FILETYPES) && !in_array($value, $SKIPFILES)) {
-            // if (in_array(substr($name, strrpos($name, '.')), $FILETYPES)) {
-            $result[] = $name;
-          }
-        }
+    if (is_dir($name)) {
+      if ($scan_subdirs && !in_array($file, $SKIPDIRS)) {
+        $result = array_merge($result, read_recursiv($name, TRUE));
       }
     }
+    elseif (0 !== strpos($file, 'x_') && in_array(pathinfo($file, PATHINFO_EXTENSION), $FILETYPES) && !in_array($file, $SKIPFILES)) {
+      $result[] = $name;
+    }
   }
-  closedir($handle);
+
   return $result;
 }

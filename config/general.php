@@ -63,7 +63,7 @@ define('MAX_ARRAY_KEYS', 10);      // maximum array key $array[1][2][3][4]..
 define('PRELOAD_SHOW_LINE', 500);    // every X line a preloader information is added
 
 $FILETYPES = [            // filetypes to scan
-  '.php',
+  'php',
 ];
 
 $SKIPDIRS = [
