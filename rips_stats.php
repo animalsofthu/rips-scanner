@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Copyright (C) 2020 AnimalSoft Kft.
+ */
+
 declare(strict_types=1);
 
 error_reporting(E_ALL);
@@ -25,7 +29,7 @@ foreach ($argv as $arg) {
     unset($lines[1]);
 
     foreach ($lines as $line) {
-      [$label, $value] = explode(':</td><td>', $line);
+      [$label, $value] = preg_split('%:</td>[\s\r\n]*<td>%u', $line);
 
       $label = trim(strip_tags($label));
       $value = (float) trim(strip_tags($value));

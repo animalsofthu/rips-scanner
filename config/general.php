@@ -6,6 +6,7 @@
  *
  *
  * Copyright (C) 2012 Johannes Dahse
+ * Copyright (C) 2020 AnimalSoft Kft.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -20,8 +21,8 @@
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses/>.
  **/
-if (php_sapi_name() === 'cli') {
-  define("MODE_CLI", 1);
+if ('cli' === PHP_SAPI) {
+  define('MODE_CLI', 1);
 }
 
 #error_reporting(E_ALL);
@@ -30,7 +31,7 @@ error_reporting(E_ERROR | E_PARSE);
 if (function_exists('apache_setenv')) {
   apache_setenv('no-gzip', 1);
 }
-if (!defined("MODE_CLI")) {
+if (!defined('MODE_CLI')) {
   ini_set('zlib.output_compression', 0);
 }
 ini_set('zlib.output_compression', 0);
@@ -39,17 +40,17 @@ ini_set('output_buffering', 0);
 
 ini_set('short_open_tag', 1);      // who knows if I use them ;)
 ini_set('auto_detect_line_endings', 1);  // detect newlines in MAC files
-ini_set("memory_limit", "1000M");    // set memory size to 1G
+ini_set('memory_limit', '1000M');    // set memory size to 1G
 set_time_limit(0);            // 5 minutes
 
-if (extension_loaded('tokenizer') === FALSE) {
+if (FALSE === extension_loaded('tokenizer')) {
   echo 'Please enable the PHP tokenizer extension to run RIPS.';
   exit;
 }
 
-define('VERSION', '0.55');        // RIPS version to be displayed
+define('VERSION', '0.55-as');        // RIPS version to be displayed
 define('MAXTRACE', 30);          // maximum of parameter traces per sensitive sink
-if (!defined("MODE_CLI")) {
+if (!defined('MODE_CLI')) {
   define('WARNFILES', 50);
 }      // warn user if amount of files to scan is higher than this value, also limits the graphs so they dont get too confusing and prevents browser hanging
 else {
@@ -63,19 +64,18 @@ define('PRELOAD_SHOW_LINE', 500);    // every X line a preloader information is 
 
 $FILETYPES = [            // filetypes to scan
   '.php',
-  '.inc',
-  '.phps',
-  '.php4',
-  '.php5',
-  //'.html',
-  //'.htm',
-  //'.txt',
-  '.phtml',
-  '.tpl',
-  '.cgi',
-  '.test',
-  '.module',
-  '.plugin',
+];
+
+$SKIPDIRS = [
+  '.git',
+  '.github',
+  '.idea',
+  'migrations',
+  'tests',
+  'vendor',
+];
+$SKIPFILES = [
+  'phpqrcode.php',
 ];
 
 // available stylesheets (filename without .css ending)
@@ -96,7 +96,7 @@ $stylesheets = [
 if (isset($_POST['stylesheet']) && $_POST['stylesheet'] !== $_COOKIE['stylesheet']) {
   $_COOKIE['stylesheet'] = $_POST['stylesheet'];
 }
-$default_stylesheet = isset($_COOKIE['stylesheet']) ? $_COOKIE['stylesheet'] : 'ayti';
-setcookie("stylesheet", $default_stylesheet);
+$default_stylesheet = $_COOKIE['stylesheet'] ?? 'notepad++';
+setcookie('stylesheet', $default_stylesheet);
 
 $default_vector = 'all';
