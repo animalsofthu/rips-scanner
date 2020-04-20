@@ -108,7 +108,7 @@
 
   $file = $_GET['file'];
   $marklines = explode(',', $_GET['lines']);
-  $ext = '.' . pathinfo($file, PATHINFO_EXTENSION);
+  $ext = pathinfo($file, PATHINFO_EXTENSION);
 
 
   if (!empty($file) && is_file($file) && in_array($ext, $FILETYPES)) {
