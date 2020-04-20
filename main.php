@@ -50,6 +50,8 @@ $scanned_files = [];
 // EXPERIMENTAL: scan as if register_globals=on
 define('SCAN_REGISTER_GLOBALS', array_key_exists('register_globals', $_POST) ? !empty($_POST['register_globals']) : TRUE);
 
+$_POST['vector'] = $_POST['vector'] ?? 'all';
+
 if (!empty($_POST['loc'])) {
   $mbb_dir = realpath($_POST['loc']) . '/web/MobilGateAppBackend/builds';
 
