@@ -229,6 +229,42 @@ if (!empty($_POST['loc'])) {
       // timeleft = average_time_per_file * file_amount_left
       $timeleft = round(($overall_time / ($fit + 1)) * ($file_amount - $fit + 1), 2);
     }
+
+    $okFuncRe = '%(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS)) . ')\s*\(%i';
+
+    /** @var VulnBlock[] $output */
+    foreach ($output as $blocks) {
+      foreach ($blocks as $block) {
+        if (NULL === $block->vuln || $block->vuln) {
+          foreach ($block->treenodes as $treenode) {
+            $file = file($treenode->filename);
+
+            /** @var VarDeclare|\FunctionDeclare $child */
+            $walk = static function ($child) use (&$walk, $okFuncRe, $block) {
+              if (preg_match($okFuncRe, $child->value)) {
+                $block->vuln = FALSE;
+
+                decreaseVulnCounter($block->name);
+              }
+
+              array_walk($child->children, $walk);
+            };
+            array_walk($treenode->children, $walk);
+
+            foreach ($treenode->lines as $lineNo) {
+              if (FALSE !== strpos($file[$lineNo - 1], '@rips-ignore') || preg_match($okFuncRe, $file[$lineNo - 1])) {
+                $block->vuln = FALSE;
+
+                decreaseVulnCounter($treenode->name);
+
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+
     #die("done");
     echo "STATS_DONE.\n";
     if (defined('MODE_CLI')) {
@@ -367,6 +403,7 @@ $elapsed = microtime(TRUE) - $start;
     // output stats
     if (empty($_POST['search'])) {
       $count_all = $count_xss + $count_sqli + $count_fr + $count_fa + $count_fi + $count_exec + $count_code + $count_eval + $count_xpath + $count_ldap + $count_con + $count_other + $count_pop + $count_header + $count_sf + $count_ri;
+
       if ($count_all > 0) {
         if ($count_code > 0) {
           statsRow(1, $NAME_CODE, $count_code, $count_all);

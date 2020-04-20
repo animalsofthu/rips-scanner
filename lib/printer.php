@@ -48,22 +48,18 @@ function tokenstostring($tokens) {
       if (',' === $token || ';' === $token) {
         $output .= "$token ";
       }
+      elseif (in_array($token, Tokens::$S_SPACE_WRAP) || in_array($token, Tokens::$S_ARITHMETIC)) {
+        $output .= " $token ";
+      }
       else {
-        if (in_array($token, Tokens::$S_SPACE_WRAP) || in_array($token, Tokens::$S_ARITHMETIC)) {
-          $output .= " $token ";
-        }
-        else {
-          $output .= $token;
-        }
+        $output .= $token;
       }
     }
+    elseif (in_array($token[0], Tokens::$T_SPACE_WRAP) || in_array($token[0], Tokens::$T_OPERATOR) || in_array($token[0], Tokens::$T_ASSIGNMENT)) {
+      $output .= " {$token[1]} ";
+    }
     else {
-      if (in_array($token[0], Tokens::$T_SPACE_WRAP) || in_array($token[0], Tokens::$T_OPERATOR) || in_array($token[0], Tokens::$T_ASSIGNMENT)) {
-        $output .= " {$token[1]} ";
-      }
-      else {
-        $output .= $token[1];
-      }
+      $output .= $token[1];
     }
   }
   return $output;
@@ -77,10 +73,8 @@ function highlightline($tokens = [], $comment = '', $line_nr, $title = FALSE, $u
     $output .= '<a class="link" href="' . PHPDOC . $title . '" title="open php documentation" target=_blank>';
     $output .= "$title</a>&nbsp;";
   }
-  else {
-    if ($udftitle) {
-      $output .= '<a class="link" style="text-decoration:none;" href="#' . $udftitle . '_declare" title="jump to declaration">&uArr;</a>&nbsp;';
-    }
+  elseif ($udftitle) {
+    $output .= '<a class="link" style="text-decoration:none;" href="#' . $udftitle . '_declare" title="jump to declaration">&uArr;</a>&nbsp;';
   }
 
   $var_count = 0;
@@ -91,102 +85,98 @@ function highlightline($tokens = [], $comment = '', $line_nr, $title = FALSE, $u
       if (',' === $token || ';' === $token) {
         $output .= "<span class=\"phps-code\">$token&nbsp;</span>";
       }
+      elseif (in_array($token, Tokens::$S_SPACE_WRAP) || in_array($token, Tokens::$S_ARITHMETIC)) {
+        $output .= '<span class="phps-code">&nbsp;' . $token . '&nbsp;</span>';
+      }
       else {
-        if (in_array($token, Tokens::$S_SPACE_WRAP) || in_array($token, Tokens::$S_ARITHMETIC)) {
-          $output .= '<span class="phps-code">&nbsp;' . $token . '&nbsp;</span>';
-        }
-        else {
-          $output .= '<span class="phps-code">' . htmlentities($token, ENT_QUOTES, 'utf-8') . '</span>';
-        }
+        $output .= '<span class="phps-code">' . htmlentities($token, ENT_QUOTES, 'utf-8') . '</span>';
       }
 
     }
-    else {
-      if (is_array($token)
-        && T_OPEN_TAG !== $token[0]
-        && T_CLOSE_TAG !== $token[0]) {
+    elseif (is_array($token)
+      && T_OPEN_TAG !== $token[0]
+      && T_CLOSE_TAG !== $token[0]) {
 
-        if (in_array($token[0], Tokens::$T_SPACE_WRAP) || in_array($token[0], Tokens::$T_OPERATOR) || in_array($token[0], Tokens::$T_ASSIGNMENT)) {
-          $output .= '&nbsp;<span class="phps-' . str_replace('_', '-', strtolower(token_name($token[0]))) . "\">{$token[1]}</span>&nbsp;";
+      if (in_array($token[0], Tokens::$T_SPACE_WRAP) || in_array($token[0], Tokens::$T_OPERATOR) || in_array($token[0], Tokens::$T_ASSIGNMENT)) {
+        $output .= '&nbsp;<span class="phps-' . str_replace('_', '-', strtolower(token_name($token[0]))) . "\">{$token[1]}</span>&nbsp;";
+      }
+      else {
+        if (T_FUNCTION === $token[0]) {
+          $reference = FALSE;
+          $funcname = T_STRING === $tokens[$i + 1][0] ? $tokens[$i + 1][1] : $tokens[$i + 2][1];
+          $output .= '<A NAME="' . $funcname . '_declare" class="jumplink"></A>';
+          $output .= '<a class="link" style="text-decoration:none;" href="#' . $funcname . '_call" title="jump to call">&dArr;</a>&nbsp;';
+        }
+
+        $text = htmlentities($token[1], ENT_QUOTES, 'utf-8');
+        $text = str_replace([' ', "\n"], '&nbsp;', $text);
+
+        if (T_FUNCTION === $token[0]) {
+          $text .= '&nbsp;';
+        }
+
+        if (T_STRING === $token[0] && $reference
+          && isset($GLOBALS['user_functions_offset'][strtolower($text)])) {
+          $text = @'<span onmouseover="getFuncCode(this,\'' . addslashes($GLOBALS['user_functions_offset'][strtolower($text)][0]) . '\',\'' . $GLOBALS['user_functions_offset'][strtolower($text)][1] . '\',\'' . $GLOBALS['user_functions_offset'][strtolower($text)][2] . '\')" style="text-decoration:underline" class="phps-' . str_replace('_', '-', strtolower(token_name($token[0]))) . "\">$text</span>\n";
         }
         else {
-          if (T_FUNCTION === $token[0]) {
-            $reference = FALSE;
-            $funcname = T_STRING === $tokens[$i + 1][0] ? $tokens[$i + 1][1] : $tokens[$i + 2][1];
-            $output .= '<A NAME="' . $funcname . '_declare" class="jumplink"></A>';
-            $output .= '<a class="link" style="text-decoration:none;" href="#' . $funcname . '_call" title="jump to call">&dArr;</a>&nbsp;';
+          $span = '<span ';
+
+          if (T_VARIABLE === $token[0]) {
+            $var_count++;
+            $cssname = str_replace('$', '', $token[1]);
+            $span .= 'style="cursor:pointer;" name="phps-var-' . $cssname . '" onClick="markVariable(\'' . $cssname . '\')" ';
+            $span .= 'onmouseover="markVariable(\'' . $cssname . '\')" onmouseout="markVariable(\'' . $cssname . '\')" ';
           }
 
-          $text = htmlentities($token[1], ENT_QUOTES, 'utf-8');
-          $text = str_replace([' ', "\n"], '&nbsp;', $text);
-
-          if (T_FUNCTION === $token[0]) {
-            $text .= '&nbsp;';
-          }
-
-          if (T_STRING === $token[0] && $reference
-            && isset($GLOBALS['user_functions_offset'][strtolower($text)])) {
-            $text = @'<span onmouseover="getFuncCode(this,\'' . addslashes($GLOBALS['user_functions_offset'][strtolower($text)][0]) . '\',\'' . $GLOBALS['user_functions_offset'][strtolower($text)][1] . '\',\'' . $GLOBALS['user_functions_offset'][strtolower($text)][2] . '\')" style="text-decoration:underline" class="phps-' . str_replace('_', '-', strtolower(token_name($token[0]))) . "\">$text</span>\n";
+          if (T_VARIABLE === $token[0] && @in_array($var_count, $tainted_vars)) {
+            $span .= "class=\"phps-tainted-var\">$text</span>";
           }
           else {
-            $span = '<span ';
+            $span .= 'class="phps-' . str_replace('_', '-', strtolower(token_name($token[0]))) . "\">$text</span>";
+          }
 
-            if (T_VARIABLE === $token[0]) {
-              $var_count++;
-              $cssname = str_replace('$', '', $token[1]);
-              $span .= 'style="cursor:pointer;" name="phps-var-' . $cssname . '" onClick="markVariable(\'' . $cssname . '\')" ';
-              $span .= 'onmouseover="markVariable(\'' . $cssname . '\')" onmouseout="markVariable(\'' . $cssname . '\')" ';
-            }
+          $text = $span;
 
-            if (T_VARIABLE === $token[0] && @in_array($var_count, $tainted_vars)) {
-              $span .= "class=\"phps-tainted-var\">$text</span>";
-            }
-            else {
-              $span .= 'class="phps-' . str_replace('_', '-', strtolower(token_name($token[0]))) . "\">$text</span>";
-            }
-
-            $text = $span;
-
-            // rebuild array keys
-            if (isset($token[3])) {
-              foreach ($token[3] as $key) {
-                if ('*' != $key) {
-                  $text .= '<span class="phps-code">[</span>';
-                  if (!is_array($key)) {
-                    if (is_numeric($key)) {
-                      $text .= '<span class="phps-t-lnumber">' . $key . '</span>';
-                    }
-                    else {
-                      $text .= '<span class="phps-t-constant-encapsed-string">\'' . htmlentities($key, ENT_QUOTES, 'utf-8') . '\'</span>';
-                    }
+          // rebuild array keys
+          if (isset($token[3])) {
+            foreach ($token[3] as $key) {
+              if ('*' != $key) {
+                $text .= '<span class="phps-code">[</span>';
+                if (!is_array($key)) {
+                  if (is_numeric($key)) {
+                    $text .= '<span class="phps-t-lnumber">' . $key . '</span>';
                   }
                   else {
-                    foreach ($key as $token) {
-                      if (is_array($token)) {
-                        $text .= '<span ';
+                    $text .= '<span class="phps-t-constant-encapsed-string">\'' . htmlentities($key, ENT_QUOTES, 'utf-8') . '\'</span>';
+                  }
+                }
+                else {
+                  foreach ($key as $token) {
+                    if (is_array($token)) {
+                      $text .= '<span ';
 
-                        if (T_VARIABLE === $token[0]) {
-                          $cssname = str_replace('$', '', $token[1]);
-                          $text .= 'style="cursor:pointer;" name="phps-var-' . $cssname . '" onClick="markVariable(\'' . $cssname . '\')" ';
-                          $text .= 'onmouseover="markVariable(\'' . $cssname . '\')" onmouseout="markVariable(\'' . $cssname . '\')" ';
-                        }
+                      if (T_VARIABLE === $token[0]) {
+                        $cssname = str_replace('$', '', $token[1]);
+                        $text .= 'style="cursor:pointer;" name="phps-var-' . $cssname . '" onClick="markVariable(\'' . $cssname . '\')" ';
+                        $text .= 'onmouseover="markVariable(\'' . $cssname . '\')" onmouseout="markVariable(\'' . $cssname . '\')" ';
+                      }
 
-                        $text .= 'class="phps-' . str_replace('_', '-', strtolower(token_name($token[0]))) . '">' . htmlentities($token[1], ENT_QUOTES, 'utf-8') . '</span>';
-                      }
-                      else {
-                        $text .= "<span class=\"phps-code\">{$token}</span>";
-                      }
+                      $text .= 'class="phps-' . str_replace('_', '-', strtolower(token_name($token[0]))) . '">' . htmlentities($token[1], ENT_QUOTES, 'utf-8') . '</span>';
+                    }
+                    else {
+                      $text .= "<span class=\"phps-code\">{$token}</span>";
                     }
                   }
-                  $text .= '<span class="phps-code">]</span>';
                 }
+                $text .= '<span class="phps-code">]</span>';
               }
             }
           }
-          $output .= $text;
-          if (is_array($token) && (in_array($token[0], Tokens::$T_INCLUDES) || in_array($token[0], Tokens::$T_XSS) || 'T_EVAL' === $token[0])) {
-            $output .= '&nbsp;';
-          }
+        }
+        $output .= $text;
+        if (is_array($token) && (in_array($token[0], Tokens::$T_INCLUDES) || in_array($token[0], Tokens::$T_XSS) || 'T_EVAL' === $token[0])) {
+          $output .= '&nbsp;';
         }
       }
     }
@@ -205,78 +195,50 @@ function getVulnNodeTitle($func_name) {
   if (isset($GLOBALS['F_XSS'][$func_name])) {
     $vulnname = $GLOBALS['NAME_XSS'];
   }
+  elseif (isset($GLOBALS['F_HTTP_HEADER'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_HTTP_HEADER'];
+  }
+  elseif (isset($GLOBALS['F_SESSION_FIXATION'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_SESSION_FIXATION'];
+  }
+  elseif (isset($GLOBALS['F_DATABASE'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_DATABASE'];
+  }
+  elseif (isset($GLOBALS['F_FILE_READ'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_FILE_READ'];
+  }
+  elseif (isset($GLOBALS['F_FILE_AFFECT'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_FILE_AFFECT'];
+  }
+  elseif (isset($GLOBALS['F_FILE_INCLUDE'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_FILE_INCLUDE'];
+  }
+  elseif (isset($GLOBALS['F_CONNECT'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_CONNECT'];
+  }
+  elseif (isset($GLOBALS['F_EXEC'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_EXEC'];
+  }
+  elseif (isset($GLOBALS['F_CODE'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_CODE'];
+  }
+  elseif (isset($GLOBALS['F_REFLECTION'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_REFLECTION'];
+  }
+  elseif (isset($GLOBALS['F_XPATH'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_XPATH'];
+  }
+  elseif (isset($GLOBALS['F_LDAP'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_LDAP'];
+  }
+  elseif (isset($GLOBALS['F_POP'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_POP'];
+  }
+  elseif (isset($GLOBALS['F_OTHER'][$func_name])) {
+    $vulnname = $GLOBALS['NAME_OTHER'];
+  } // :X
   else {
-    if (isset($GLOBALS['F_HTTP_HEADER'][$func_name])) {
-      $vulnname = $GLOBALS['NAME_HTTP_HEADER'];
-    }
-    else {
-      if (isset($GLOBALS['F_SESSION_FIXATION'][$func_name])) {
-        $vulnname = $GLOBALS['NAME_SESSION_FIXATION'];
-      }
-      else {
-        if (isset($GLOBALS['F_DATABASE'][$func_name])) {
-          $vulnname = $GLOBALS['NAME_DATABASE'];
-        }
-        else {
-          if (isset($GLOBALS['F_FILE_READ'][$func_name])) {
-            $vulnname = $GLOBALS['NAME_FILE_READ'];
-          }
-          else {
-            if (isset($GLOBALS['F_FILE_AFFECT'][$func_name])) {
-              $vulnname = $GLOBALS['NAME_FILE_AFFECT'];
-            }
-            else {
-              if (isset($GLOBALS['F_FILE_INCLUDE'][$func_name])) {
-                $vulnname = $GLOBALS['NAME_FILE_INCLUDE'];
-              }
-              else {
-                if (isset($GLOBALS['F_CONNECT'][$func_name])) {
-                  $vulnname = $GLOBALS['NAME_CONNECT'];
-                }
-                else {
-                  if (isset($GLOBALS['F_EXEC'][$func_name])) {
-                    $vulnname = $GLOBALS['NAME_EXEC'];
-                  }
-                  else {
-                    if (isset($GLOBALS['F_CODE'][$func_name])) {
-                      $vulnname = $GLOBALS['NAME_CODE'];
-                    }
-                    else {
-                      if (isset($GLOBALS['F_REFLECTION'][$func_name])) {
-                        $vulnname = $GLOBALS['NAME_REFLECTION'];
-                      }
-                      else {
-                        if (isset($GLOBALS['F_XPATH'][$func_name])) {
-                          $vulnname = $GLOBALS['NAME_XPATH'];
-                        }
-                        else {
-                          if (isset($GLOBALS['F_LDAP'][$func_name])) {
-                            $vulnname = $GLOBALS['NAME_LDAP'];
-                          }
-                          else {
-                            if (isset($GLOBALS['F_POP'][$func_name])) {
-                              $vulnname = $GLOBALS['NAME_POP'];
-                            }
-                            else {
-                              if (isset($GLOBALS['F_OTHER'][$func_name])) {
-                                $vulnname = $GLOBALS['NAME_OTHER'];
-                              } // :X
-                              else {
-                                $vulnname = 'unknown';
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    $vulnname = 'unknown';
   }
   return $vulnname;
 }
@@ -287,75 +249,97 @@ function increaseVulnCounter($func_name) {
   if (isset($GLOBALS['F_XSS'][$func_name])) {
     $GLOBALS['count_xss']++;
   }
-  else {
-    if (isset($GLOBALS['F_HTTP_HEADER'][$func_name])) {
-      $GLOBALS['count_header']++;
-    }
-    else {
-      if (isset($GLOBALS['F_SESSION_FIXATION'][$func_name])) {
-        $GLOBALS['count_sf']++;
-      }
-      else {
-        if (isset($GLOBALS['F_DATABASE'][$func_name])) {
-          $GLOBALS['count_sqli']++;
-        }
-        else {
-          if (isset($GLOBALS['F_FILE_READ'][$func_name])) {
-            $GLOBALS['count_fr']++;
-          }
-          else {
-            if (isset($GLOBALS['F_FILE_AFFECT'][$func_name])) {
-              $GLOBALS['count_fa']++;
-            }
-            else {
-              if (isset($GLOBALS['F_FILE_INCLUDE'][$func_name])) {
-                $GLOBALS['count_fi']++;
-              }
-              else {
-                if (isset($GLOBALS['F_CONNECT'][$func_name])) {
-                  $GLOBALS['count_con']++;
-                }
-                else {
-                  if (isset($GLOBALS['F_EXEC'][$func_name])) {
-                    $GLOBALS['count_exec']++;
-                  }
-                  else {
-                    if (isset($GLOBALS['F_CODE'][$func_name])) {
-                      $GLOBALS['count_code']++;
-                    }
-                    else {
-                      if (isset($GLOBALS['F_REFLECTION'][$func_name])) {
-                        $GLOBALS['count_ri']++;
-                      }
-                      else {
-                        if (isset($GLOBALS['F_XPATH'][$func_name])) {
-                          $GLOBALS['count_xpath']++;
-                        }
-                        else {
-                          if (isset($GLOBALS['F_LDAP'][$func_name])) {
-                            $GLOBALS['count_ldap']++;
-                          }
-                          else {
-                            if (isset($GLOBALS['F_POP'][$func_name])) {
-                              $GLOBALS['count_pop']++;
-                            }
-                            else {
-                              if (isset($GLOBALS['F_OTHER'][$func_name])) {
-                                $GLOBALS['count_other']++;
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+  elseif (isset($GLOBALS['F_HTTP_HEADER'][$func_name])) {
+    $GLOBALS['count_header']++;
+  }
+  elseif (isset($GLOBALS['F_SESSION_FIXATION'][$func_name])) {
+    $GLOBALS['count_sf']++;
+  }
+  elseif (isset($GLOBALS['F_DATABASE'][$func_name])) {
+    $GLOBALS['count_sqli']++;
+  }
+  elseif (isset($GLOBALS['F_FILE_READ'][$func_name])) {
+    $GLOBALS['count_fr']++;
+  }
+  elseif (isset($GLOBALS['F_FILE_AFFECT'][$func_name])) {
+    $GLOBALS['count_fa']++;
+  }
+  elseif (isset($GLOBALS['F_FILE_INCLUDE'][$func_name])) {
+    $GLOBALS['count_fi']++;
+  }
+  elseif (isset($GLOBALS['F_CONNECT'][$func_name])) {
+    $GLOBALS['count_con']++;
+  }
+  elseif (isset($GLOBALS['F_EXEC'][$func_name])) {
+    $GLOBALS['count_exec']++;
+  }
+  elseif (isset($GLOBALS['F_CODE'][$func_name])) {
+    $GLOBALS['count_code']++;
+  }
+  elseif (isset($GLOBALS['F_REFLECTION'][$func_name])) {
+    $GLOBALS['count_ri']++;
+  }
+  elseif (isset($GLOBALS['F_XPATH'][$func_name])) {
+    $GLOBALS['count_xpath']++;
+  }
+  elseif (isset($GLOBALS['F_LDAP'][$func_name])) {
+    $GLOBALS['count_ldap']++;
+  }
+  elseif (isset($GLOBALS['F_POP'][$func_name])) {
+    $GLOBALS['count_pop']++;
+  }
+  elseif (isset($GLOBALS['F_OTHER'][$func_name])) {
+    $GLOBALS['count_other']++;
+  } // :X
+}
+
+// detect vulnerability type given by the PVF name
+// note: same names are used in help.php!
+function decreaseVulnCounter($func_name) {
+  if (isset($GLOBALS['F_XSS'][$func_name])) {
+    $GLOBALS['count_xss']--;
+  }
+  elseif (isset($GLOBALS['F_HTTP_HEADER'][$func_name])) {
+    $GLOBALS['count_header']--;
+  }
+  elseif (isset($GLOBALS['F_SESSION_FIXATION'][$func_name])) {
+    $GLOBALS['count_sf']--;
+  }
+  elseif (isset($GLOBALS['F_DATABASE'][$func_name])) {
+    $GLOBALS['count_sqli']--;
+  }
+  elseif (isset($GLOBALS['F_FILE_READ'][$func_name])) {
+    $GLOBALS['count_fr']--;
+  }
+  elseif (isset($GLOBALS['F_FILE_AFFECT'][$func_name])) {
+    $GLOBALS['count_fa']--;
+  }
+  elseif (isset($GLOBALS['F_FILE_INCLUDE'][$func_name])) {
+    $GLOBALS['count_fi']--;
+  }
+  elseif (isset($GLOBALS['F_CONNECT'][$func_name])) {
+    $GLOBALS['count_con']--;
+  }
+  elseif (isset($GLOBALS['F_EXEC'][$func_name])) {
+    $GLOBALS['count_exec']--;
+  }
+  elseif (isset($GLOBALS['F_CODE'][$func_name])) {
+    $GLOBALS['count_code']--;
+  }
+  elseif (isset($GLOBALS['F_REFLECTION'][$func_name])) {
+    $GLOBALS['count_ri']--;
+  }
+  elseif (isset($GLOBALS['F_XPATH'][$func_name])) {
+    $GLOBALS['count_xpath']--;
+  }
+  elseif (isset($GLOBALS['F_LDAP'][$func_name])) {
+    $GLOBALS['count_ldap']--;
+  }
+  elseif (isset($GLOBALS['F_POP'][$func_name])) {
+    $GLOBALS['count_pop']--;
+  }
+  elseif (isset($GLOBALS['F_OTHER'][$func_name])) {
+    $GLOBALS['count_other']--;
   } // :X
 }
 
@@ -543,10 +527,8 @@ function printoutput($output, $treestyle = 1) {
                 if (1 == $treestyle) {
                   traverseBottomUp($tree);
                 }
-                else {
-                  if (2 == $treestyle) {
-                    traverseTopDown($tree);
-                  }
+                elseif (2 == $treestyle) {
+                  traverseTopDown($tree);
                 }
 
                 echo '<ul><li>', "\n";
@@ -572,20 +554,16 @@ function printoutput($output, $treestyle = 1) {
         'onClick="hide(\'', addslashes(key($output)), '\')">', "\n",
         '</div></div><hr>', "\n";
       }
-      else {
-        if (1 == count($output)) {
-          echo '<div style="margin-left:30px;color:#000000">Nothing vulnerable found. Change the verbosity level or vulnerability type  and try again.</div>';
-        }
+      elseif (1 == count($output)) {
+        echo '<div style="margin-left:30px;color:#000000">Nothing vulnerable found. Change the verbosity level or vulnerability type  and try again.</div>';
       }
     } while (next($output));
   }
+  elseif (count($GLOBALS['scanned_files']) > 0) {
+    echo '<div style="margin-left:30px;color:#000000">Nothing vulnerable found. Change the verbosity level or vulnerability type and try again.</div>';
+  }
   else {
-    if (count($GLOBALS['scanned_files']) > 0) {
-      echo '<div style="margin-left:30px;color:#000000">Nothing vulnerable found. Change the verbosity level or vulnerability type and try again.</div>';
-    }
-    else {
-      echo '<div style="margin-left:30px;color:#000000">Nothing to scan. Please check your path/file name.</div>';
-    }
+    echo '<div style="margin-left:30px;color:#000000">Nothing to scan. Please check your path/file name.</div>';
   }
 
 }

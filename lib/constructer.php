@@ -47,6 +47,9 @@ class VarDeclare {
 
   public $array_keys;
 
+  /** @var self[] */
+  public $children = [];
+
   public function __construct($tokens = [], $comment = '') {
     $this->id = 0;
     $this->tokens = $tokens;
@@ -67,6 +70,7 @@ class VulnBlock {
 
   public $uid;
 
+  /** @var bool|null */
   public $vuln;
 
   public $category;
@@ -110,6 +114,7 @@ class VulnTreeNode {
 
   public $filename;
 
+  /** @var VarDeclare[] */
   public $children;
 
   public $funcdepend;
