@@ -1992,25 +1992,10 @@ class Scanner {
                       $new_find->title = 'Userinput reaches sensitive sink. For more information, press the help icon on the left side.';
                     }
                     $block = new VulnBlock($this->tif . '_' . $this->tokens[$i][2] . '_' . basename($this->file_pointer), getVulnNodeTitle($token_value), $token_value);
-                    $block->vuln = TRUE;
                     $block->treenodes[] = $new_find;
                     if ($parameter_has_userinput || 4 == $GLOBALS['verbosity']) {
-                      foreach ($block->treenodes as $treenode) {
-                        $file = file($treenode->filename);
-
-                        foreach ($treenode->lines as $lineNo) {
-                          if (FALSE !== strpos($file[$lineNo - 1], '@rips-ignore')) {
-                            $block->vuln = FALSE;
-
-                            break;
-                          }
-                        }
-                      }
-
-                      if ($block->vuln) {
-                        // echo '<pre>';                        print_r($block);                        exit;
-                        increaseVulnCounter($token_value);
-                      }
+                      $block->vuln = TRUE;
+                      increaseVulnCounter($token_value);
                     }
                     // if sink in var declare, offer a data leak scan - save infos for that
                     if (isset($vardeclare)) {
@@ -2020,9 +2005,7 @@ class Scanner {
                       ];
                     }
 
-                    if ($block->vuln) {
-                      $GLOBALS['output'][$this->file_name][] = $block;
-                    }
+                    $GLOBALS['output'][$this->file_name][] = $block;
                   }
 
                 }
