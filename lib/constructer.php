@@ -71,6 +71,7 @@ class VulnBlock {
 
   public $category;
 
+  /** @var \VulnTreeNode[] */
   public $treenodes;
 
   public $sink;
