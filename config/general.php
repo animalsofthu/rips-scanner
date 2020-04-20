@@ -71,6 +71,7 @@ $SKIPDIRS = [
   '.github',
   '.idea',
   'migrations',
+  'rips',
   'rips-scanner-communit',
   'tests',
   'translations',
