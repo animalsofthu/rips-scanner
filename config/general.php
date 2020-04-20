@@ -73,6 +73,7 @@ $SKIPDIRS = [
   'migrations',
   'rips-scanner-communit',
   'tests',
+  'translations',
   'vendor',
 ];
 $SKIPFILES = [
