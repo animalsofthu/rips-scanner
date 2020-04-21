@@ -120,10 +120,10 @@ $F_SECURING_STRING = [
   'gethostname',
   'gethostbynamel',
   'gethostbyname',
-
   'strtotime',
   'date',
   'substr',
+  'filter'
 ];
 
 // functions that insecures the string again
@@ -163,6 +163,7 @@ $F_SECURING_XSS = [
   'htmlspecialchars',
   'highlight_string',
   'escape',
+  'filter'
 ];
 
 // securing functions for SQLi
