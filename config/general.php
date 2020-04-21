@@ -81,6 +81,11 @@ $SKIPFILES = [
   'phpqrcode.php',
 ];
 
+$SKIPVARS = [
+  '$alp',
+  '$prg',
+];
+
 // available stylesheets (filename without .css ending)
 // more colors at http://wiki.macromates.com/Themes/UserSubmittedThemes
 $stylesheets = [

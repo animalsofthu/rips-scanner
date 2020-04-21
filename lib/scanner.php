@@ -497,7 +497,7 @@ class Scanner {
       }
       // register globals
       else {
-        if (SCAN_REGISTER_GLOBALS && T_VARIABLE === $var_token[0] && !in_array($var_name, Sources::$V_USERINPUT) && (!$this->in_function || (in_array($var_name, $this->put_in_global_scope) && !in_array($var_name, $this->function_obj->parameters))) && empty($secured)) {
+        if (SCAN_REGISTER_GLOBALS && T_VARIABLE === $var_token[0] && empty($secured) && !in_array($var_name, Sources::$V_USERINPUT) && (!$this->in_function || (in_array($var_name, $this->put_in_global_scope) && !in_array($var_name, $this->function_obj->parameters))) && !in_array($var_name, $GLOBALS['SKIPVARS'])) {
           // add highlighted line to output, mark tainted vars
           $var_trace = new VarDeclare('');
           $parent->children[] = $var_trace;
