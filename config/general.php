@@ -51,7 +51,7 @@ if (FALSE === extension_loaded('tokenizer')) {
 define('VERSION', '0.55-as');        // RIPS version to be displayed
 define('MAXTRACE', 30);          // maximum of parameter traces per sensitive sink
 if (!defined('MODE_CLI')) {
-  define('WARNFILES', 50);
+  define('WARNFILES', 1500);
 }      // warn user if amount of files to scan is higher than this value, also limits the graphs so they dont get too confusing and prevents browser hanging
 else {
   define('WARNFILES', 500000);
