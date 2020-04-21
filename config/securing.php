@@ -23,7 +23,7 @@
 
 // securing functions in if-clause
 // list not used, all if clause dependencies detected anyway
-$F_SECURING_BOOL = [
+$F_SECURING_BOOL = array_map('strtolower', [
   'is_bool',
   'is_double',
   'is_float',
@@ -49,10 +49,10 @@ $F_SECURING_BOOL = [
   'fnmatch',
   'ereg',
   'eregi',
-];
+]);
 
 // securing functions for every vulnerability
-$F_SECURING_STRING = [
+$F_SECURING_STRING = array_map('strtolower', [
   'intval',
   'floatval',
   'doubleval',
@@ -124,10 +124,10 @@ $F_SECURING_STRING = [
   'date',
   'substr',
   'filter',
-];
+]);
 
 // functions that insecures the string again
-$F_INSECURING_STRING = [
+$F_INSECURING_STRING = array_map('strtolower', [
   'base64_decode',
   'htmlspecialchars_decode',
   'html_entity_decode',
@@ -155,10 +155,10 @@ $F_INSECURING_STRING = [
   'utf8_decode',
   'recode_string',
   'recode',
-];
+]);
 
 // securing functions for XSS
-$F_SECURING_XSS = [
+$F_SECURING_XSS = array_map('strtolower', [
   'htmlentities',
   'htmlspecialchars',
   'highlight_string',
@@ -167,10 +167,10 @@ $F_SECURING_XSS = [
   'toJSON',
   'strtotime',
   'date',
-];
+]);
 
 // securing functions for SQLi
-$F_SECURING_SQL = [
+$F_SECURING_SQL = array_map('strtolower', [
   'addslashes',
   'dbx_escape_string',
   'db2_escape_string',
@@ -187,30 +187,30 @@ $F_SECURING_SQL = [
   'sqlite_udf_encode_binary',
   'cubrid_real_escape_string',
   'quote',
-];
+]);
 
 // securing functions for RCE with e-modifier in preg_**
-$F_SECURING_PREG = [
+$F_SECURING_PREG = array_map('strtolower', [
   'preg_quote',
-];
+]);
 
 // securing functions for file handling
-$F_SECURING_FILE = [
+$F_SECURING_FILE = array_map('strtolower', [
   'basename',
   'dirname',
   'pathinfo',
-];
+]);
 
 // securing functions for OS command execution
-$F_SECURING_SYSTEM = [
+$F_SECURING_SYSTEM = array_map('strtolower', [
   'escapeshellarg',
   'escapeshellcmd',
-];
+]);
 
 // securing XPath injection
-$F_SECURING_XPATH = [
+$F_SECURING_XPATH = array_map('strtolower', [
   'addslashes',
-];
+]);
 
 // securing LDAP injection
 $F_SECURING_LDAP = [
