@@ -42,7 +42,7 @@ foreach ($argv as $arg) {
       }
       else {
         $label = 'Unknown ' . ++$unknown;
-        $value = $columns;
+        $value = implode(' ', $columns);
       }
 
       $label = trim(strip_tags($label));
