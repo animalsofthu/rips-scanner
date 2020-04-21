@@ -85,7 +85,7 @@ ob_start();
                     ];
 
                     foreach ($verbosities as $level => $description) {
-                      echo "<option value=\"$level\">$description</option>\n";
+                      echo "<option value=\"$level\"" . ($level == ($_POST['verbosity'] ?? $GLOBALS['verbosity'] ?? 2) ? 'selected' : '') . ">$description</option>\n";
                     }
                     ?>
                   </select>
@@ -100,23 +100,22 @@ ob_start();
                     $vectors = [
                       'all'          => 'All',
                       'server'       => 'All server-side',
-                      'code'         => '- Code Execution',
-                      'exec'         => '- Command Execution',
-                      'file_read'    => '- File Disclosure',
-                      'file_include' => '- File Inclusion',
-                      'file_affect'  => '- File Manipulation',
-                      'ldap'         => '- LDAP Injection',
-                      'unserialize'  => '- PHP Object Injection',
-                      'connect'      => '- Protocol Injection',
-                      'ri'           => '- Reflection Injection',
-                      'database'     => '- SQL Injection',
-                      'xpath'        => '- XPath Injection',
-                      'other'        => '- other',
+                      'code'         => '   Code Execution',
+                      'exec'         => '   Command Execution',
+                      'file_read'    => '   File Disclosure',
+                      'file_include' => '   File Inclusion',
+                      'file_affect'  => '   File Manipulation',
+                      'ldap'         => '   LDAP Injection',
+                      'unserialize'  => '   PHP Object Injection',
+                      'connect'      => '   Protocol Injection',
+                      'ri'           => '   Reflection Injection',
+                      'database'     => '   SQL Injection',
+                      'xpath'        => '   XPath Injection',
+                      'other'        => '   other',
                       'client'       => 'All client-side',
-                      'xss'          => '- Cross-Site Scripting',
-                      'httpheader'   => '- HTTP Response Splitting',
-                      'fixation'     => '- Session Fixation',
-                      //'crypto'		=> 'Crypto hints'
+                      'xss'          => '   Cross-Site Scripting',
+                      'httpheader'   => '   HTTP Response Splitting',
+                      'fixation'     => '   Session Fixation',
                     ];
 
                     foreach ($vectors as $vector => $description) {
