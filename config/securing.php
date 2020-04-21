@@ -123,7 +123,7 @@ $F_SECURING_STRING = [
   'strtotime',
   'date',
   'substr',
-  'filter'
+  'filter',
 ];
 
 // functions that insecures the string again
@@ -165,6 +165,8 @@ $F_SECURING_XSS = [
   'escape',
   'filter',
   'toJSON',
+  'strtotime',
+  'date',
 ];
 
 // securing functions for SQLi
