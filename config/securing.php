@@ -163,7 +163,8 @@ $F_SECURING_XSS = [
   'htmlspecialchars',
   'highlight_string',
   'escape',
-  'filter'
+  'filter',
+  'toJSON',
 ];
 
 // securing functions for SQLi
