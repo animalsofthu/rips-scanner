@@ -37,16 +37,9 @@ ob_start();
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/rips.css"/>
-    <?php
-
-    foreach ($stylesheets as $stylesheet) {
-      echo "\t<link type=\"text/css\" href=\"css/$stylesheet.css\" rel=\"";
-      if ($stylesheet != $default_stylesheet) {
-        echo 'alternate ';
-      }
-      echo "stylesheet\" title=\"$stylesheet\" />\n";
-    }
-    ?>
+    <?php foreach ($stylesheets as $stylesheet): ?>
+      <link rel="<?= $stylesheet !== $default_stylesheet ? 'alternate ' : '' ?>stylesheet" href="css/<?= $stylesheet ?>.css" title="<?= $stylesheet ?>">
+    <?php endforeach ?>
     <script src="js/script.js"></script>
     <script src="js/exploit.js"></script>
     <script src="js/hotpatch.js"></script>
@@ -67,7 +60,8 @@ ob_start();
                   <input type="text" size=80 id="location" value="<?php echo BASEDIR; ?>" title="enter path to PHP file(s)" placeholder="/var/www/">
                 </td>
                 <td nowrap>
-                  <input type="checkbox" id="subdirs" value="1" title="check to scan subdirectories" checked/>subdirs
+                  <input type="checkbox" id="subdirs" value="1" title="check to scan subdirectories" checked> subdirs<br>
+                  <input type="checkbox" id="register_globals" value="1" checked> register_globals<br>
                 </td>
               </tr>
               <tr>
@@ -85,7 +79,7 @@ ob_start();
                     ];
 
                     foreach ($verbosities as $level => $description) {
-                      echo "<option value=\"$level\"" . ($level == ($_POST['verbosity'] ?? $GLOBALS['verbosity'] ?? 2) ? 'selected' : '') . ">$description</option>\n";
+                      echo "<option value=\"$level\"" . ($level == ($_POST['verbosity'] ?? $GLOBALS['verbosity'] ?? 2) ? 'selected' : '') . ">$description";
                     }
                     ?>
                   </select>
@@ -136,15 +130,9 @@ ob_start();
                 <td nowrap>code style:</td>
                 <td nowrap>
                   <select name="stylesheet" id="css" onChange="setActiveStyleSheet(this.value);" style="width:49%" title="select color schema for scan result">
-                    <?php
-                    foreach ($stylesheets as $stylesheet) {
-                      echo "<option value=\"$stylesheet\" ";
-                      if ($stylesheet == $default_stylesheet) {
-                        echo 'selected';
-                      }
-                      echo ">$stylesheet</option>\n";
-                    }
-                    ?>
+                    <?php foreach ($stylesheets as $stylesheet): ?>
+                      <option value="<?= $stylesheet ?>"<?= $stylesheet == $default_stylesheet ? ' selected' : '' ?>><?= $stylesheet ?></option>
+                    <?php endforeach ?>
                   </select>
                   <select id="treestyle" style="width:49%" title="select direction of code flow in scan result">
                     <option value="1">bottom-up</option>
