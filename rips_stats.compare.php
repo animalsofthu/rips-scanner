@@ -68,12 +68,14 @@ $new = json_decode(file_get_contents('new.json'), TRUE);
   </tr>
   </thead>
   <tbody>
-  <?php foreach ($old as $key => $value): ?>
-    <?php $change = ($old[$key] - $new[$key]) / $old[$key] * -100 ?>
+  <?php foreach (array_unique(array_merge(array_keys($old), array_keys($new))) as $key): ?>
+    <?php $oldvalue = $old[$key] ?? 0 ?>
+    <?php $newvalue = $new[$key] ?? 0 ?>
+    <?php $change = ($oldvalue - $newvalue) / max(1, $oldvalue) * -100 ?>
     <tr>
       <th><?= $key ?></th>
-      <td><?= $old[$key] ?></td>
-      <td><?= $new[$key] ?></td>
+      <td><?= $oldvalue ?></td>
+      <td><?= $newvalue ?></td>
       <td class="<?= $change ? ($change < 0 ? 'ok' : 'nok') : 'no' ?>"><?php
         printf('%+.02f%%', $change);
         ?></td>
