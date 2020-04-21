@@ -230,7 +230,8 @@ if (!empty($_POST['loc'])) {
       $timeleft = round(($overall_time / ($fit + 1)) * ($file_amount - $fit + 1), 2);
     }
 
-    $okFuncRe = '%(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS)) . ')\s*\(|=\s*\((int|integer|bool|boolean|float|double|real|unset)\)%i';
+    // $okFuncRe = '%(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS)) . ')\s*\(|=\s*\((int|integer|bool|boolean|float|double|real|unset)\)%i';
+    $okFuncRe = '%=\s*(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS)) . ')\s*\(|=\s*\((int|integer|bool|boolean|float|double|real|unset)\)%i';
 
     /** @var VulnBlock[] $output */
     foreach ($output as $blocks) {
