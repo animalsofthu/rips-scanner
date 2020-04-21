@@ -230,8 +230,22 @@ if (!empty($_POST['loc'])) {
       $timeleft = round(($overall_time / ($fit + 1)) * ($file_amount - $fit + 1), 2);
     }
 
-    // $okFuncRe = '%(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS)) . ')\s*\(|=\s*\((int|integer|bool|boolean|float|double|real|unset)\)%i';
-    $okFuncRe = '%=\s*(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS)) . ')\s*\(|=\s*\((int|integer|bool|boolean|float|double|real|unset)\)%i';
+    $okFuncRe = '%(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS)) . ')\s*\(|=\s*\((int|integer|bool|boolean|float|double|real|unset)\)%i';
+    // $okFuncRe = '%=\s*(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS)) . ')\s*\(|=\s*\((int|integer|bool|boolean|float|double|real|unset)\)%i';
+
+    /** @var VarDeclare|\FunctionDeclare $child */
+    $walker = static function ($child) use (&$walker, $okFuncRe, &$block) {
+      $value = strip_tags($child->value);
+      $value = str_replace('&nbsp;', ' ', $value);
+
+      if (preg_match($okFuncRe, $value)) {
+        $block->vuln = FALSE;
+
+        decreaseVulnCounter($block->name);
+      }
+
+      array_walk($child->children, $walker);
+    };
 
     /** @var VulnBlock[] $output */
     foreach ($output as $blocks) {
@@ -240,20 +254,7 @@ if (!empty($_POST['loc'])) {
           foreach ($block->treenodes as $treenode) {
             $file = file($treenode->filename);
 
-            /** @var VarDeclare|\FunctionDeclare $child */
-            $walk = static function ($child) use (&$walk, $okFuncRe, $block) {
-              $value = strip_tags($child->value);
-              $value = str_replace('&nbsp;', ' ', $value);
-
-              if (preg_match($okFuncRe, $value)) {
-                $block->vuln = FALSE;
-
-                decreaseVulnCounter($block->name);
-              }
-
-              array_walk($child->children, $walk);
-            };
-            array_walk($treenode->children, $walk);
+            array_walk($treenode->children, $walker);
 
             foreach ($treenode->lines as $lineNo) {
               if (FALSE !== strpos($file[$lineNo - 1], '@rips-ignore') || preg_match($okFuncRe, $file[$lineNo - 1])) {
