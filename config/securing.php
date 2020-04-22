@@ -124,6 +124,10 @@ $F_SECURING_STRING = array_map('strtolower', [
   'date',
   'substr',
   'filter',
+  'array_sum_key',
+  'array_wavg_key',
+  'array_count_key',
+  'array_avg_key',
 ]);
 
 // functions that insecures the string again
@@ -167,6 +171,10 @@ $F_SECURING_XSS = array_map('strtolower', [
   'toJSON',
   'strtotime',
   'date',
+  'array_sum_key',
+  'array_wavg_key',
+  'array_count_key',
+  'array_avg_key',
 ]);
 
 // securing functions for SQLi
