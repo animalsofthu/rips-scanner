@@ -586,8 +586,8 @@ function createFunctionList($user_functions_offset) {
       // create JS graph elements
       foreach ($user_functions_offset as $func_name => $info) {
         if ('__main__' !== $func_name) {
-          $x = (0 == $i % 4) ? $x = 20 : $x = $x + 160;
-          $y = (0 == $i % 4) ? $y = $y + 70 : $y = $y;
+          $x = (0 == $i % 4) ? $x = 20 : $x += 160;
+          $y = (0 == $i % 4) ? $y += 70 : $y = $y;
           $i++;
 
           $func_varname = str_replace('::', '', $func_name);
@@ -698,8 +698,8 @@ function createFileList($files, $file_sinks) {
     // add JS elements
     foreach ($elements as $file) {
       if ('__break__' !== $file) {
-        $x = (0 == $i % 4) ? $x = 20 : $x = $x + 160;
-        $y = (0 == $i % 4) ? $y = $y + 70 : $y = $y;
+        $x = (0 == $i % 4) ? $x = 20 : $x += 160;
+        $y = (0 == $i % 4) ? $y += 70 : $y = $y;
         $i++;
 
         // leave space for legend symbols
@@ -726,7 +726,7 @@ function createFileList($files, $file_sinks) {
       }
       else {
         // add to $i what is missing til new row is created
-        $i = $i + (4 - ($i % 4));
+        $i += (4 - ($i % 4));
         $y += 30;
         $style = 'scriptTemplate';
       }
@@ -773,6 +773,6 @@ function createFileList($files, $file_sinks) {
 }
 
 function statsRow($nr, $name, $amount, $all) {
-  echo '<tr><td nowrap onmouseover="this.style.color=\'white\';" onmouseout="this.style.color=\'#DFDFDF\';" onClick="catshow(\'', $name, '\')" style="cursor:pointer;" title="show only vulnerabilities of this category">', $name, ':</td><td nowrap><div id="chart' . $nr . '" class="chart" style="width:',
+  echo '<tr><td nowrap onmouseover="this.style.color=\'white\';" onmouseout="this.style.color=\'#DFDFDF\';" onClick="catshow(\'', $name, '\')" style="cursor:pointer;" title="show only vulnerabilities of this category">', $name, '</td><td nowrap><div id="chart' . $nr . '" class="chart" style="width:',
   round(($amount / $all) * 100, 0), '"></div><div id="vuln' . $nr . '">', $amount, '</div></td></tr>';
 }

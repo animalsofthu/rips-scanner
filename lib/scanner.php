@@ -1310,7 +1310,7 @@ class Scanner {
                 // put all previously saved global var assignments to global scope
                 foreach ($this->globals_from_function[$token_value] as $var_name => $new_vars) {
                   foreach ($new_vars as $new_var) {
-                    $new_var->comment = $new_var->comment . " by $token_value()";
+                    $new_var->comment .= " by $token_value()";
                     if (!isset($this->var_declares_global[$var_name])) {
                       $this->var_declares_global[$var_name] = [$new_var];
                     }
@@ -2171,7 +2171,7 @@ class Scanner {
               );
             }
           }
-          $i = $i + $c + 2;
+          $i += $c + 2;
         }
         // switch lines pointer back to original code if included tokens end
         elseif (T_INCLUDE_END === $token_name) {
