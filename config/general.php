@@ -72,7 +72,7 @@ $SKIPDIRS = [
   '.idea',
   'migrations',
   'rips',
-  'rips-scanner-communit',
+  'rips-scanner-community',
   'tests',
   'translations',
   'vendor',
@@ -89,6 +89,7 @@ $SKIPVARS = [
 // available stylesheets (filename without .css ending)
 // more colors at http://wiki.macromates.com/Themes/UserSubmittedThemes
 $stylesheets = [
+  'notepad++',
   'print',
   'phps',
   'code-dark',
@@ -96,7 +97,6 @@ $stylesheets = [
   'espresso',
   'term',
   'barf',
-  'notepad++',
   'ayti',
 ];
 
