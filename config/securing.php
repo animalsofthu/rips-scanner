@@ -132,6 +132,14 @@ $F_SECURING_STRING = array_map('strtolower', [
   'multiplication',
   'division',
   'ceil',
+  'rdatum_datumbol',
+  'datum_rdatumbol',
+  'toDateFromShortDate',
+  'toShortDateFromDate',
+  'unix_rdatumbol',
+  'toTimeStampFromShortDate',
+  'unix_datumbol',
+  'toTimeStampFromDate',
 ]);
 
 // functions that insecures the string again

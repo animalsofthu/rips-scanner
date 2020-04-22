@@ -238,7 +238,9 @@ if (!empty($_POST['loc'])) {
       $value = strip_tags($child->value);
       $value = str_replace('&nbsp;', ' ', $value);
 
-      if (preg_match($okFuncRe, $value)) {
+      if ($block->vuln && preg_match($okFuncRe, $value)) {
+        // echo $block->name . ' notVuln cos - ' . $value, '<br>';
+
         $block->vuln = FALSE;
 
         decreaseVulnCounter($block->name);
@@ -256,13 +258,17 @@ if (!empty($_POST['loc'])) {
 
             array_walk($treenode->children, $walker);
 
-            foreach ($treenode->lines as $lineNo) {
-              if (FALSE !== strpos($file[$lineNo - 1], '@rips-ignore') || preg_match($okFuncRe, $file[$lineNo - 1])) {
-                $block->vuln = FALSE;
+            if ($block->vuln) {
+              foreach ($treenode->lines as $lineNo) {
+                if (FALSE !== strpos($file[$lineNo - 1], '@rips-ignore') || preg_match($okFuncRe, $file[$lineNo - 1])) {
+                  // echo $treenode->name . '() notVuln cos - ' . $file[$lineNo - 1], '<br>';
+
+                  $block->vuln = FALSE;
 
                   decreaseVulnCounter($block->name);
 
-                break;
+                  break;
+                }
               }
             }
           }

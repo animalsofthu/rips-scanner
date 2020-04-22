@@ -252,53 +252,54 @@ function increaseVulnCounter(?string $func_name, int $amount = 1, bool $allowNul
     return 'F_UNKNOWN';
   }
 
-  if (isset($GLOBALS[$key='F_XSS'][$func_name])) {
+  if (isset($GLOBALS[$key = 'F_XSS'][$func_name])) {
     $count_xss += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_HTTP_HEADER'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_HTTP_HEADER'][$func_name])) {
     $count_header += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_SESSION_FIXATION'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_SESSION_FIXATION'][$func_name])) {
     $count_sf += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_DATABASE'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_DATABASE'][$func_name])) {
     $count_sqli += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_FILE_READ'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_FILE_READ'][$func_name])) {
     $count_fr += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_FILE_AFFECT'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_FILE_AFFECT'][$func_name])) {
     $count_fa += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_FILE_INCLUDE'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_FILE_INCLUDE'][$func_name])) {
     $count_fi += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_CONNECT'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_CONNECT'][$func_name])) {
     $count_con += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_EXEC'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_EXEC'][$func_name])) {
     $count_exec += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_CODE'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_CODE'][$func_name])) {
     $count_code += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_REFLECTION'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_REFLECTION'][$func_name])) {
     $count_ri += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_XPATH'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_XPATH'][$func_name])) {
     $count_xpath += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_LDAP'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_LDAP'][$func_name])) {
     $count_ldap += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_POP'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_POP'][$func_name])) {
     $count_pop += $amount;
   }
-  elseif (isset($GLOBALS[$key='F_OTHER'][$func_name])) {
+  elseif (isset($GLOBALS[$key = 'F_OTHER'][$func_name])) {
     $count_other += $amount;
   }
   else {
-    throw new InvalidArgumentException('Unknown vulnerable function: ' . $func_name);
+    // throw new InvalidArgumentException('Unknown vulnerable function: ' . $func_name);
+    $key = 'F_EXCEPTION';
   }
 
   return $key;
