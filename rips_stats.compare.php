@@ -12,6 +12,24 @@ chdir('c:/Users/User/PhpstormProjects/rips-scanner');
 
 $old = json_decode(file_get_contents('old.json'), TRUE);
 $new = json_decode(file_get_contents('new.json'), TRUE);
+
+$keys = [];
+foreach (array_unique(array_merge(array_keys($old), array_keys($new))) as $key) {
+  if (':' === $key[-1]) {
+    $newkey = substr($key, 0, -1);
+  }
+
+  if (isset($old[$key]) && !isset($old[$newkey])) {
+    $old[$newkey] = $old[$key];
+  }
+
+  if (isset($new[$key]) && !isset($new[$newkey])) {
+    $new[$newkey] = $new[$key];
+  }
+
+  $keys[] = $newkey;
+}
+$keys = array_unique($keys);
 ?>
 <!doctype html>
 <html lang="en" dir="ltr">
@@ -68,7 +86,7 @@ $new = json_decode(file_get_contents('new.json'), TRUE);
   </tr>
   </thead>
   <tbody>
-  <?php foreach (array_unique(array_merge(array_keys($old), array_keys($new))) as $key): ?>
+  <?php foreach ($keys as $key): ?>
     <?php $oldvalue = $old[$key] ?? 0 ?>
     <?php $newvalue = $new[$key] ?? 0 ?>
     <?php $change = ($oldvalue - $newvalue) / max(1, $oldvalue) * -100 ?>
