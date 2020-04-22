@@ -230,8 +230,8 @@ if (!empty($_POST['loc'])) {
       $timeleft = round(($overall_time / ($fit + 1)) * ($file_amount - $fit + 1), 2);
     }
 
-    $okFuncRe = '%(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS)) . ')\s*\(|=\s*\((int|integer|bool|boolean|float|double|real|unset)\)%i';
-    // $okFuncRe = '%=\s*(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS)) . ')\s*\(|=\s*\((int|integer|bool|boolean|float|double|real|unset)\)%i';
+    $okFuncRe = '%(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS, $F_SECURING_SQL)) . ')\s*\(|=\s*\((int|integer|bool|boolean|float|double|real|unset)\)%i';
+    // $okFuncRe = '%=\s*(' . implode('|', array_merge($F_SECURING_FILE, $F_SECURING_XSS, $F_SECURING_SQL)) . ')\s*\(|=\s*\((int|integer|bool|boolean|float|double|real|unset)\)%i';
 
     /** @var VarDeclare|\FunctionDeclare $child */
     $walker = static function ($child) use (&$walker, $okFuncRe, &$block) {
@@ -270,7 +270,7 @@ if (!empty($_POST['loc'])) {
       }
     }
 
-    #die("done");
+    // die('done');
     echo "STATS_DONE.\n";
     if (defined('MODE_CLI')) {
       echo "\n</div>";
@@ -282,13 +282,11 @@ if (!empty($_POST['loc'])) {
     }
   }
   // SEARCH
-  else {
-    if (!empty($_POST['regex'])) {
-      $count_matches = 0;
-      $verbosity = 0;
-      foreach ($files as $file_name) {
-        searchFile($file_name, $_POST['regex']);
-      }
+  elseif (!empty($_POST['regex'])) {
+    $count_matches = 0;
+    $verbosity = 0;
+    foreach ($files as $file_name) {
+      searchFile($file_name, $_POST['regex']);
     }
   }
 }
