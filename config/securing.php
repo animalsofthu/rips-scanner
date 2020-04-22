@@ -201,6 +201,7 @@ $F_SECURING_SQL = array_map('strtolower', [
   'sqlite_udf_encode_binary',
   'cubrid_real_escape_string',
   'quote',
+  'quote_array',
 ]);
 
 // securing functions for RCE with e-modifier in preg_**
