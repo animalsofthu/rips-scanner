@@ -89,7 +89,7 @@ $SKIPVARS = [
 // available stylesheets (filename without .css ending)
 // more colors at http://wiki.macromates.com/Themes/UserSubmittedThemes
 $stylesheets = [
-  'notepad++',
+  'notepadpp',
   'print',
   'phps',
   'code-dark',
@@ -104,7 +104,7 @@ $stylesheets = [
 if (isset($_POST['stylesheet']) && $_POST['stylesheet'] !== $_COOKIE['stylesheet']) {
   $_COOKIE['stylesheet'] = $_POST['stylesheet'];
 }
-$default_stylesheet = $_COOKIE['stylesheet'] ?? 'notepad++';
+$default_stylesheet = $_COOKIE['stylesheet'] ?? 'notepadpp';
 setcookie('stylesheet', $default_stylesheet);
 
 $default_vector = 'all';
