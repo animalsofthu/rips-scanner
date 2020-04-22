@@ -299,6 +299,8 @@ if (!empty($_POST['loc'])) {
               print_r($block);
               exit;
             }
+
+            increaseVulnCounter($name, 1, FALSE);
           }
         }
       }
