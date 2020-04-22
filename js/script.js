@@ -75,8 +75,10 @@ function scan(ignore_warning) {
   var vector = document.getElementById("vector").value;
   var treestyle = document.getElementById("treestyle").value;
   var stylesheet = document.getElementById("css").value;
+  var register_globals = document.getElementById("register_globals").checked;
 
-  var params = "loc=" + location + "&subdirs=" + subdirs + "&verbosity=" + verbosity + "&vector=" + vector + "&treestyle=" + treestyle + "&stylesheet=" + stylesheet;
+  var params = "loc=" + location + "&subdirs=" + subdirs + "&verbosity=" + verbosity + "&vector=" + vector + "&treestyle=" + treestyle + "&stylesheet=" + stylesheet
+  +'&register_globals=' + (register_globals ? 1 : 0);
 
   if (ignore_warning) {
     params += "&ignore_warning=1";

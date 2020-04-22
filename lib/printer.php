@@ -245,102 +245,67 @@ function getVulnNodeTitle($func_name) {
 
 // detect vulnerability type given by the PVF name
 // note: same names are used in help.php!
-function increaseVulnCounter($func_name) {
+function increaseVulnCounter(?string $func_name, int $amount = 1) {
+  global $count_xss, $count_header, $count_sf, $count_sqli, $count_fr, $count_fa, $count_fi, $count_con, $count_exec, $count_code, $count_ri, $count_xpath, $count_ldap, $count_pop, $count_other;
+
+  if (NULL === $func_name) {
+    return;
+  }
+
   if (isset($GLOBALS['F_XSS'][$func_name])) {
-    $GLOBALS['count_xss']++;
+    $count_xss += $amount;
   }
   elseif (isset($GLOBALS['F_HTTP_HEADER'][$func_name])) {
-    $GLOBALS['count_header']++;
+    $count_header += $amount;
   }
   elseif (isset($GLOBALS['F_SESSION_FIXATION'][$func_name])) {
-    $GLOBALS['count_sf']++;
+    $count_sf += $amount;
   }
   elseif (isset($GLOBALS['F_DATABASE'][$func_name])) {
-    $GLOBALS['count_sqli']++;
+    $count_sqli += $amount;
   }
   elseif (isset($GLOBALS['F_FILE_READ'][$func_name])) {
-    $GLOBALS['count_fr']++;
+    $count_fr += $amount;
   }
   elseif (isset($GLOBALS['F_FILE_AFFECT'][$func_name])) {
-    $GLOBALS['count_fa']++;
+    $count_fa += $amount;
   }
   elseif (isset($GLOBALS['F_FILE_INCLUDE'][$func_name])) {
-    $GLOBALS['count_fi']++;
+    $count_fi += $amount;
   }
   elseif (isset($GLOBALS['F_CONNECT'][$func_name])) {
-    $GLOBALS['count_con']++;
+    $count_con += $amount;
   }
   elseif (isset($GLOBALS['F_EXEC'][$func_name])) {
-    $GLOBALS['count_exec']++;
+    $count_exec += $amount;
   }
   elseif (isset($GLOBALS['F_CODE'][$func_name])) {
-    $GLOBALS['count_code']++;
+    $count_code += $amount;
   }
   elseif (isset($GLOBALS['F_REFLECTION'][$func_name])) {
-    $GLOBALS['count_ri']++;
+    $count_ri += $amount;
   }
   elseif (isset($GLOBALS['F_XPATH'][$func_name])) {
-    $GLOBALS['count_xpath']++;
+    $count_xpath += $amount;
   }
   elseif (isset($GLOBALS['F_LDAP'][$func_name])) {
-    $GLOBALS['count_ldap']++;
+    $count_ldap += $amount;
   }
   elseif (isset($GLOBALS['F_POP'][$func_name])) {
-    $GLOBALS['count_pop']++;
+    $count_pop += $amount;
   }
   elseif (isset($GLOBALS['F_OTHER'][$func_name])) {
-    $GLOBALS['count_other']++;
-  } // :X
+    $count_other += $amount;
+  }
+  else {
+    throw new InvalidArgumentException('Unknown vulnerable function: ' . $func_name);
+  }
 }
 
 // detect vulnerability type given by the PVF name
 // note: same names are used in help.php!
-function decreaseVulnCounter($func_name) {
-  if (isset($GLOBALS['F_XSS'][$func_name])) {
-    $GLOBALS['count_xss']--;
-  }
-  elseif (isset($GLOBALS['F_HTTP_HEADER'][$func_name])) {
-    $GLOBALS['count_header']--;
-  }
-  elseif (isset($GLOBALS['F_SESSION_FIXATION'][$func_name])) {
-    $GLOBALS['count_sf']--;
-  }
-  elseif (isset($GLOBALS['F_DATABASE'][$func_name])) {
-    $GLOBALS['count_sqli']--;
-  }
-  elseif (isset($GLOBALS['F_FILE_READ'][$func_name])) {
-    $GLOBALS['count_fr']--;
-  }
-  elseif (isset($GLOBALS['F_FILE_AFFECT'][$func_name])) {
-    $GLOBALS['count_fa']--;
-  }
-  elseif (isset($GLOBALS['F_FILE_INCLUDE'][$func_name])) {
-    $GLOBALS['count_fi']--;
-  }
-  elseif (isset($GLOBALS['F_CONNECT'][$func_name])) {
-    $GLOBALS['count_con']--;
-  }
-  elseif (isset($GLOBALS['F_EXEC'][$func_name])) {
-    $GLOBALS['count_exec']--;
-  }
-  elseif (isset($GLOBALS['F_CODE'][$func_name])) {
-    $GLOBALS['count_code']--;
-  }
-  elseif (isset($GLOBALS['F_REFLECTION'][$func_name])) {
-    $GLOBALS['count_ri']--;
-  }
-  elseif (isset($GLOBALS['F_XPATH'][$func_name])) {
-    $GLOBALS['count_xpath']--;
-  }
-  elseif (isset($GLOBALS['F_LDAP'][$func_name])) {
-    $GLOBALS['count_ldap']--;
-  }
-  elseif (isset($GLOBALS['F_POP'][$func_name])) {
-    $GLOBALS['count_pop']--;
-  }
-  elseif (isset($GLOBALS['F_OTHER'][$func_name])) {
-    $GLOBALS['count_other']--;
-  } // :X
+function decreaseVulnCounter($func_name): void {
+  increaseVulnCounter($func_name, -1);
 }
 
 // traced parameter output bottom-up
@@ -426,12 +391,13 @@ function dependenciesTraverse($tree) {
 }
 
 // check for vulns found in file
-function fileHasVulns($blocks) {
+function fileHasVulns($blocks): bool {
   foreach ($blocks as $block) {
     if ($block->vuln) {
       return TRUE;
     }
   }
+
   return FALSE;
 }
 
