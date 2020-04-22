@@ -128,6 +128,8 @@ $F_SECURING_STRING = array_map('strtolower', [
   'array_wavg_key',
   'array_count_key',
   'array_avg_key',
+  'multiplication',
+  'division',
 ]);
 
 // functions that insecures the string again
@@ -175,6 +177,8 @@ $F_SECURING_XSS = array_map('strtolower', [
   'array_wavg_key',
   'array_count_key',
   'array_avg_key',
+  'multiplication',
+  'division',
 ]);
 
 // securing functions for SQLi
