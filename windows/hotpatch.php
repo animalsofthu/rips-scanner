@@ -22,20 +22,14 @@
  * this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
-if (!empty($_GET['file']))
-{
+if (!empty($_GET['file'])) {
 $file = $_GET['file'];
 ?>
-
 <div style="padding: 20px; width: 400px">
-
-
   <div id="hotpatchbuild">
-
     Create mod_security rule.
 
     <?php
-
     function getFilterOptions($id) {
       return '<select name="filter" onchange="document.getElementById(' . $id . ').value=this.value">'
         . '<option value="alpha">alphanum</option>'
@@ -96,24 +90,18 @@ $file = $_GET['file'];
     if (isset($_GET['server'])) {
       creatediv($_GET['server'], '$_SERVER');
     }
-
-
     ?>
 
     <input type="button" class="Button" value="create" onClick="createHotpatch()"/>&nbsp;
     <br/><br/>
   </div>
 
-  <div id="hotpatchcode">
-
-  </div>
+  <div id="hotpatchcode"></div>
 
   <?php
   }
   else {
     echo 'No file loaded';
   }
-
   ?>
-
 </div>

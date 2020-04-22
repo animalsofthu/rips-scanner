@@ -58,13 +58,11 @@ if (!empty($_POST['loc'])) {
       die('warning:' . count($files));
     }
   }
+  elseif (is_file($location) && in_array(substr($location, strrpos($location, '.')), $FILETYPES)) {
+    $files[0] = $location;
+  }
   else {
-    if (is_file($location) && in_array(substr($location, strrpos($location, '.')), $FILETYPES)) {
-      $files[0] = $location;
-    }
-    else {
-      $files = [];
-    }
+    $files = [];
   }
 
   // SCAN
@@ -176,10 +174,8 @@ if (!empty($output)) {
             if (1 == $treestyle) {
               traverseBottomUp($tree);
             }
-            else {
-              if (2 == $treestyle) {
-                traverseTopDown($tree);
-              }
+            elseif (2 == $treestyle) {
+              traverseTopDown($tree);
             }
 
             echo '<ul><li>', "\n";
@@ -193,4 +189,3 @@ if (!empty($output)) {
     }
   } while (next($output));
 }
-?>

@@ -36,21 +36,21 @@
         $output .= htmlentities($token, ENT_QUOTES, 'utf-8');
         $output .= '</span>';
       }
-      else {
-        if (is_array($token)
-          && T_OPEN_TAG !== $token[0]
-          && T_CLOSE_TAG !== $token[0]) {
-          if (T_WHITESPACE !== $token[0]) {
-            $text = '<span class="phps-' . str_replace('_', '-', strtolower(token_name($token[0]))) . '">';
-            $text .= htmlentities($token[1], ENT_QUOTES, 'utf-8') . '</span>';
-          }
-          else {
-            $text = str_replace(' ', '&nbsp;', $token[1]);
-            $text = str_replace("\t", str_repeat('&nbsp;', 8), $text);
-          }
-
-          $output .= $text;
+      elseif (is_array($token)
+        && T_OPEN_TAG !== $token[0]
+        && T_CLOSE_TAG !== $token[0]) {
+        if (T_WHITESPACE !== $token[0]) {
+          $text = '<span class="phps-' . str_replace('_', '-', strtolower(token_name($token[0]))) . '">';
+          $text .= htmlentities($token[1], ENT_QUOTES, 'utf-8') . '</span>';
         }
+        else {
+          $text = str_replace([' ', "\t"], [
+            '&nbsp;',
+            str_repeat('&nbsp;', 8)
+          ], $token[1]);
+        }
+
+        $output .= $text;
       }
     }
     return $output . '</td></tr>';

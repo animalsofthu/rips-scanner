@@ -42,20 +42,16 @@ class Analyzer {
             if ('DIRECTORY_SEPARATOR' === $tokens[$i][1]) {
               $value .= '/';
             }
+            elseif ('PATH_SEPARATOR' === $tokens[$i][1]) {
+              $value .= ';';
+            }
+            // global $varname -> global scope, CONSTANTS
+            elseif ((isset($tokens[$i - 1]) && is_array($tokens[$i - 1]) && T_GLOBAL === $tokens[$i - 1][0]) || '$' !== $tokens[$i][1][0]) {
+              $value .= self::get_var_value($file_name, $tokens[$i], $var_declares_global, $var_declares_global, $tokenid);
+            }
+            // local scope
             else {
-              if ('PATH_SEPARATOR' === $tokens[$i][1]) {
-                $value .= ';';
-              }
-              // global $varname -> global scope, CONSTANTS
-              else {
-                if ((isset($tokens[$i - 1]) && is_array($tokens[$i - 1]) && T_GLOBAL === $tokens[$i - 1][0]) || '$' !== $tokens[$i][1][0]) {
-                  $value .= self::get_var_value($file_name, $tokens[$i], $var_declares_global, $var_declares_global, $tokenid);
-                }
-                // local scope
-                else {
-                  $value .= self::get_var_value($file_name, $tokens[$i], $var_declares, $var_declares_global, $tokenid);
-                }
-              }
+              $value .= self::get_var_value($file_name, $tokens[$i], $var_declares, $var_declares_global, $tokenid);
             }
           }
           else {
@@ -81,51 +77,41 @@ class Analyzer {
         }
         // add strings
         // except first string of define('var', 'value')
+        elseif (T_CONSTANT_ENCAPSED_STRING === $tokens[$i][0]
+          && !(T_STRING === $tokens[$i - 2][0] && 'define' === $tokens[$i - 2][1])) {
+          // add string without quotes
+          $value .= substr($tokens[$i][1], 1, -1);
+        }
+        // add directory name dirname(__FILE__)
+        elseif (T_FILE === $tokens[$i][0]
+          && (T_STRING === $tokens[$i - 2][0] && 'dirname' === $tokens[$i - 2][1])) {
+          // overwrite value because __FILE__ is absolute
+          // add slash just to be sure
+          $value = dirname($file_name) . '/';
+        }
+        // add numbers
+        elseif (T_LNUMBER === $tokens[$i][0] || T_DNUMBER === $tokens[$i][0] || T_NUM_STRING === $tokens[$i][0]) {
+          $value .= round($tokens[$i][1]);
+        }
+        elseif (T_ENCAPSED_AND_WHITESPACE === $tokens[$i][0]) {
+          $value .= $tokens[$i][1];
+        }
+        // if in foreach($bla as $key=>$value) dont trace $key, $value back
         else {
-          if (T_CONSTANT_ENCAPSED_STRING === $tokens[$i][0]
-            && !(T_STRING === $tokens[$i - 2][0] && 'define' === $tokens[$i - 2][1])) {
-            // add string without quotes
-            $value .= substr($tokens[$i][1], 1, -1);
+          if (T_AS === $tokens[$i][0]) {
+            break;
           }
-          // add directory name dirname(__FILE__)
-          else {
-            if (T_FILE === $tokens[$i][0]
-              && (T_STRING === $tokens[$i - 2][0] && 'dirname' === $tokens[$i - 2][1])) {
-              // overwrite value because __FILE__ is absolute
-              // add slash just to be sure
-              $value = dirname($file_name) . '/';
+          // function calls
+
+          if (T_STRING === $tokens[$i][0] && '(' === $tokens[$i + 1]) {
+            // stop if strings are fetched from database/file (otherwise SQL query will be added)
+            if (in_array($tokens[$i][1], Sources::$F_DATABASE_INPUT) || in_array($tokens[$i][1], Sources::$F_FILE_INPUT) || isset(Info::$F_INTEREST[$tokens[$i][1]])) {
+              break;
             }
-            // add numbers
-            else {
-              if (T_LNUMBER === $tokens[$i][0] || T_DNUMBER === $tokens[$i][0] || T_NUM_STRING === $tokens[$i][0]) {
-                $value .= round($tokens[$i][1]);
-              }
-              else {
-                if (T_ENCAPSED_AND_WHITESPACE === $tokens[$i][0]) {
-                  $value .= $tokens[$i][1];
-                }
-                // if in foreach($bla as $key=>$value) dont trace $key, $value back
-                else {
-                  if (T_AS === $tokens[$i][0]) {
-                    break;
-                  }
-                  // function calls
-                  else {
-                    if (T_STRING === $tokens[$i][0] && '(' === $tokens[$i + 1]) {
-                      // stop if strings are fetched from database/file (otherwise SQL query will be added)
-                      if (in_array($tokens[$i][1], Sources::$F_DATABASE_INPUT) || in_array($tokens[$i][1], Sources::$F_FILE_INPUT) || isset(Info::$F_INTEREST[$tokens[$i][1]])) {
-                        break;
-                      }
-                      // add userinput for functions that return userinput
-                      else {
-                        if (in_array($tokens[$i][1], $source_functions)) {
-                          $value .= '$_USERINPUT';
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+            // add userinput for functions that return userinput
+
+            if (in_array($tokens[$i][1], $source_functions)) {
+              $value .= '$_USERINPUT';
             }
           }
         }
@@ -175,10 +161,8 @@ class Analyzer {
       if ('(' === $tokens[$i + $c]) {
         $newbraceopen++;
       }
-      else {
-        if (')' === $tokens[$i + $c]) {
-          $newbraceopen--;
-        }
+      elseif (')' === $tokens[$i + $c]) {
+        $newbraceopen--;
       }
       if ($c > 50) {
         break;

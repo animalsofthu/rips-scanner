@@ -54,45 +54,37 @@
           $output .= '</span>';
         }
       }
-      else {
-        if ('/' === $tokens[$i] && '*' === $tokens[$i - 1]) {
-          $output .= '<span class="phps-t-comment">*/</span>';
+      elseif ('/' === $tokens[$i] && '*' === $tokens[$i - 1]) {
+        $output .= '<span class="phps-t-comment">*/</span>';
+      }
+      elseif (is_string($tokens[$i])) {
+        $output .= '<span class="phps-code">';
+        $output .= htmlentities(trim($tokens[$i]), ENT_QUOTES, 'utf-8');
+        $output .= '</span>';
+      }
+      elseif (is_array($tokens[$i])
+        && T_OPEN_TAG !== $tokens[$i][0]
+        && T_CLOSE_TAG !== $tokens[$i][0]) {
+        if (T_WHITESPACE !== $tokens[$i][0]) {
+          $text = '<span ';
+          if (T_VARIABLE === $tokens[$i][0]) {
+            $cssname = str_replace('$', '', $tokens[$i][1]);
+            $text .= 'style="cursor:pointer;" name="phps-var-' . $cssname . '" onClick="markVariable(\'' . $cssname . '\')" ';
+            $text .= 'onmouseover="markVariable(\'' . $cssname . '\')" onmouseout="markVariable(\'' . $cssname . '\')" ';
+          }
+          elseif (T_STRING === $tokens[$i][0] && '(' === $tokens[$i + 1] && T_FUNCTION !== $tokens[$i - 2][0]) {
+            $text .= 'onmouseover="mouseFunction(\'' . strtolower($tokens[$i][1]) . '\', this)" onmouseout="this.style.textDecoration=\'none\'" ';
+            $text .= 'onclick="openFunction(\'' . strtolower($tokens[$i][1]) . "','$line_nr');\" ";
+          }
+          $text .= 'class="phps-' . str_replace('_', '-', strtolower(token_name($tokens[$i][0]))) . '" ';
+          $text .= '>' . htmlentities($tokens[$i][1], ENT_QUOTES, 'utf-8') . '</span>';
         }
         else {
-          if (is_string($tokens[$i])) {
-            $output .= '<span class="phps-code">';
-            $output .= htmlentities(trim($tokens[$i]), ENT_QUOTES, 'utf-8');
-            $output .= '</span>';
-          }
-          else {
-            if (is_array($tokens[$i])
-              && T_OPEN_TAG !== $tokens[$i][0]
-              && T_CLOSE_TAG !== $tokens[$i][0]) {
-              if (T_WHITESPACE !== $tokens[$i][0]) {
-                $text = '<span ';
-                if (T_VARIABLE === $tokens[$i][0]) {
-                  $cssname = str_replace('$', '', $tokens[$i][1]);
-                  $text .= 'style="cursor:pointer;" name="phps-var-' . $cssname . '" onClick="markVariable(\'' . $cssname . '\')" ';
-                  $text .= 'onmouseover="markVariable(\'' . $cssname . '\')" onmouseout="markVariable(\'' . $cssname . '\')" ';
-                }
-                else {
-                  if (T_STRING === $tokens[$i][0] && '(' === $tokens[$i + 1] && T_FUNCTION !== $tokens[$i - 2][0]) {
-                    $text .= 'onmouseover="mouseFunction(\'' . strtolower($tokens[$i][1]) . '\', this)" onmouseout="this.style.textDecoration=\'none\'" ';
-                    $text .= 'onclick="openFunction(\'' . strtolower($tokens[$i][1]) . "','$line_nr');\" ";
-                  }
-                }
-                $text .= 'class="phps-' . str_replace('_', '-', strtolower(token_name($tokens[$i][0]))) . '" ';
-                $text .= '>' . htmlentities($tokens[$i][1], ENT_QUOTES, 'utf-8') . '</span>';
-              }
-              else {
-                $text = str_replace(' ', '&nbsp;', $tokens[$i][1]);
-                $text = str_replace("\t", str_repeat('&nbsp;', 8), $text);
-              }
-
-              $output .= $text;
-            }
-          }
+          $text = str_replace(' ', '&nbsp;', $tokens[$i][1]);
+          $text = str_replace("\t", str_repeat('&nbsp;', 8), $text);
         }
+
+        $output .= $text;
       }
     }
 
