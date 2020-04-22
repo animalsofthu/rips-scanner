@@ -31,7 +31,7 @@ foreach ($argv as $arg) {
     unset($lines[1]);
 
     foreach ($lines as $line) {
-      $columns = preg_split('%:</td>[\s\r\n]*<td>%u', $line);
+      $columns = preg_split('%</td>[\s\r\n]*<td>%u', $line);
 
       if (!$columns) {
         continue;
