@@ -130,6 +130,7 @@ $F_SECURING_STRING = array_map('strtolower', [
   'array_avg_key',
   'multiplication',
   'division',
+  'ceil',
 ]);
 
 // functions that insecures the string again
@@ -179,6 +180,7 @@ $F_SECURING_XSS = array_map('strtolower', [
   'array_avg_key',
   'multiplication',
   'division',
+  'ceil',
 ]);
 
 // securing functions for SQLi
