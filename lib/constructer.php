@@ -84,6 +84,9 @@ class VulnBlock {
 
   public $alternates;
 
+  /** @var string|null */
+  public $name;
+
   public function __construct($uid = '', $category = 'match', $sink = '') {
     $this->uid = $uid;
     $this->vuln = FALSE;

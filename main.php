@@ -247,7 +247,7 @@ if (!empty($_POST['loc'])) {
       array_walk($child->children, $walker);
     };
 
-    /** @var VulnBlock[] $output */
+    /** @var VulnBlock[][] $output */
     foreach ($output as $blocks) {
       foreach ($blocks as $block) {
         if (NULL === $block->vuln || $block->vuln) {
@@ -260,7 +260,7 @@ if (!empty($_POST['loc'])) {
               if (FALSE !== strpos($file[$lineNo - 1], '@rips-ignore') || preg_match($okFuncRe, $file[$lineNo - 1])) {
                 $block->vuln = FALSE;
 
-                decreaseVulnCounter($treenode->name);
+                  decreaseVulnCounter($block->name);
 
                 break;
               }
@@ -269,6 +269,35 @@ if (!empty($_POST['loc'])) {
         }
       }
     }
+
+    // recount
+    if (1) {
+      $count_xss = $count_header = $count_sf = $count_sqli = $count_fr = $count_fa = $count_fi = $count_con = $count_exec = $count_code = $count_ri = $count_xpath = $count_ldap = $count_pop = $count_other = 0;
+      foreach ($output as $blocks) {
+        foreach ($blocks as $block) {
+          if ($block->vuln) {
+            $name = $block->name;
+
+            if (NULL === $name) {
+              foreach ($block->treenodes as $treenode) {
+                if (NULL !== $treenode->name) {
+                  $name = $treenode->name;
+
+                  break;
+                }
+              }
+            }
+
+            if (NULL === $name) {
+              echo 'no-name?!<br><pre>';
+              print_r($block);
+              exit;
+            }
+          }
+        }
+      }
+    }
+    ///recount
 
     // die('done');
     echo "STATS_DONE.\n";
