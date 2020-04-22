@@ -405,6 +405,12 @@ $elapsed = microtime(TRUE) - $start;
     <?php
     // output stats
     if (empty($_POST['search'])) {
+      foreach ($GLOBALS as $key => &$value) {
+        if (0 === strpos($key, 'count_')) {
+          $value = max(0, $value);
+        }
+      }
+
       $count_all = $count_xss + $count_sqli + $count_fr + $count_fa + $count_fi + $count_exec + $count_code + $count_eval + $count_xpath + $count_ldap + $count_con + $count_other + $count_pop + $count_header + $count_sf + $count_ri;
 
       if ($count_all > 0) {
