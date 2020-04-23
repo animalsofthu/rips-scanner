@@ -48,14 +48,14 @@ function tokenstostring($tokens) {
       if (',' === $token || ';' === $token) {
         $output .= "$token ";
       }
-      elseif (in_array($token, Tokens::$S_SPACE_WRAP) || in_array($token, Tokens::$S_ARITHMETIC)) {
+      elseif (in_array($token, Tokens::S_SPACE_WRAP) || in_array($token, Tokens::S_ARITHMETIC)) {
         $output .= " $token ";
       }
       else {
         $output .= $token;
       }
     }
-    elseif (in_array($token[0], Tokens::$T_SPACE_WRAP) || in_array($token[0], Tokens::$T_OPERATOR) || in_array($token[0], Tokens::$T_ASSIGNMENT)) {
+    elseif (in_array($token[0], Tokens::T_SPACE_WRAP) || in_array($token[0], Tokens::T_OPERATOR) || in_array($token[0], Tokens::T_ASSIGNMENT)) {
       $output .= " {$token[1]} ";
     }
     else {
@@ -85,7 +85,7 @@ function highlightline($tokens = [], $comment = '', $line_nr, $title = FALSE, $u
       if (',' === $token || ';' === $token) {
         $output .= "<span class=\"phps-code\">$token&nbsp;</span>";
       }
-      elseif (in_array($token, Tokens::$S_SPACE_WRAP) || in_array($token, Tokens::$S_ARITHMETIC)) {
+      elseif (in_array($token, Tokens::S_SPACE_WRAP) || in_array($token, Tokens::S_ARITHMETIC)) {
         $output .= '<span class="phps-code">&nbsp;' . $token . '&nbsp;</span>';
       }
       else {
@@ -97,7 +97,7 @@ function highlightline($tokens = [], $comment = '', $line_nr, $title = FALSE, $u
       && T_OPEN_TAG !== $token[0]
       && T_CLOSE_TAG !== $token[0]) {
 
-      if (in_array($token[0], Tokens::$T_SPACE_WRAP) || in_array($token[0], Tokens::$T_OPERATOR) || in_array($token[0], Tokens::$T_ASSIGNMENT)) {
+      if (in_array($token[0], Tokens::T_SPACE_WRAP) || in_array($token[0], Tokens::T_OPERATOR) || in_array($token[0], Tokens::T_ASSIGNMENT)) {
         $output .= '&nbsp;<span class="phps-' . str_replace('_', '-', strtolower(token_name($token[0]))) . "\">{$token[1]}</span>&nbsp;";
       }
       else {
@@ -175,7 +175,7 @@ function highlightline($tokens = [], $comment = '', $line_nr, $title = FALSE, $u
           }
         }
         $output .= $text;
-        if (is_array($token) && (in_array($token[0], Tokens::$T_INCLUDES) || in_array($token[0], Tokens::$T_XSS) || 'T_EVAL' === $token[0])) {
+        if (is_array($token) && (in_array($token[0], Tokens::T_INCLUDES) || in_array($token[0], Tokens::T_XSS) || 'T_EVAL' === $token[0])) {
           $output .= '&nbsp;';
         }
       }

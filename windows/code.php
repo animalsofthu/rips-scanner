@@ -88,7 +88,7 @@
       }
     }
 
-    if (strstr($line, '*/')) {
+    if (FALSE !== strpos($line, '*/')) {
       $in_comment = FALSE;
     }
 

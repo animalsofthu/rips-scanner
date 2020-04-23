@@ -65,9 +65,9 @@ class Analyzer {
             // mark userinput for quote analysis
             if (('$_SERVER' !== $tokens[$i][1] || (empty($parameter_name) || in_array($parameter_name, Sources::$V_SERVER_PARAMS) || 'HTTP_' === substr($parameter_name, 0, 5)))
               && !((is_array($tokens[$i - 1])
-                  && in_array($tokens[$i - 1][0], Tokens::$T_CASTS))
+                  && in_array($tokens[$i - 1][0], Tokens::T_CASTS))
                 || (is_array($tokens[$i + 1])
-                  && in_array($tokens[$i + 1][0], Tokens::$T_ARITHMETIC)))) {
+                  && in_array($tokens[$i + 1][0], Tokens::T_ARITHMETIC)))) {
               $value .= '$_USERINPUT';
             }
             else {

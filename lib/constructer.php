@@ -192,6 +192,11 @@ class FunctionDeclare {
 
   public $parameters;
 
+  /**
+   * @var array
+   */
+  public $lines;
+
   public function __construct($tokens) {
     $this->value = '';
     $this->tokens = $tokens;

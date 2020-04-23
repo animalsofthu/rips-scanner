@@ -57,7 +57,7 @@ class Tokenizer {
     // delete whitespaces and other unimportant tokens, rewrite some special tokens
     for ($i = 0, $max = count($this->tokens); $i < $max; $i++) {
       if (is_array($this->tokens[$i])) {
-        if (in_array($this->tokens[$i][0], Tokens::$T_IGNORE)) {
+        if (in_array($this->tokens[$i][0], Tokens::T_IGNORE)) {
           unset($this->tokens[$i]);
         }
         elseif (T_CLOSE_TAG === $this->tokens[$i][0]) {
@@ -376,8 +376,7 @@ class Tokenizer {
               '"',
               "'",
             ], '', $this->tokens[$i + $c][1]);
-            unset($this->tokens[$i + $c]);
-            unset($this->tokens[$i + $c + 1]);
+            unset($this->tokens[$i + $c], $this->tokens[$i + $c + 1]);
             $c += 2;
             // save tokens of non-constant index as token-array for backtrace later
           }
@@ -455,10 +454,9 @@ class Tokenizer {
 
         }
         // condition is a check or assignment
-        elseif (in_array($this->tokens[$i - 2][0], Tokens::$T_ASSIGNMENT) || in_array($this->tokens[$i - 2][0], Tokens::$T_OPERATOR)) {
+        elseif (in_array($this->tokens[$i - 2][0], Tokens::T_ASSIGNMENT) || in_array($this->tokens[$i - 2][0], Tokens::T_OPERATOR)) {
           // remove both operands
-          unset($this->tokens[$i - 1]);
-          unset($this->tokens[$i - 2]);
+          unset($this->tokens[$i - 1], $this->tokens[$i - 2]);
           // if operand is in braces
           if (')' === $this->tokens[$i - 3]) {
             // delete tokens till (
