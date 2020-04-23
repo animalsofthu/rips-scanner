@@ -84,6 +84,7 @@ $SKIPFILES = [
 $SKIPVARS = [
   '$alp',
   '$prg',
+  '$cond_telepek',
 ];
 
 // available stylesheets (filename without .css ending)
