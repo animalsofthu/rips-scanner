@@ -179,6 +179,7 @@ $F_SECURING_XSS = array_map('strtolower', [
   'htmlspecialchars',
   'highlight_string',
   'escape',
+  'escapeArray',
   'filter',
   'toJSON',
   'strtotime',
