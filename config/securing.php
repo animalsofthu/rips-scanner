@@ -212,6 +212,7 @@ $F_SECURING_SQL = array_map('strtolower', [
   'cubrid_real_escape_string',
   'quote',
   'quote_array',
+  'quote_identifier',
 ]);
 
 // securing functions for RCE with e-modifier in preg_**
