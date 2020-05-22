@@ -140,6 +140,7 @@ $F_SECURING_STRING = array_map('strtolower', [
   'toTimeStampFromShortDate',
   'unix_datumbol',
   'toTimeStampFromDate',
+  'utcToLocalTime',
 ]);
 
 // functions that insecures the string again
