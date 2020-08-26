@@ -192,6 +192,7 @@ $F_SECURING_XSS = array_map('strtolower', [
   'multiplication',
   'division',
   'ceil',
+  'bankAccount',
 ]);
 
 // securing functions for SQLi
