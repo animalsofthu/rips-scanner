@@ -338,12 +338,12 @@ $F_DATABASE = [
   'sybase_query'            => [[1], $F_SECURING_SQL],
   'sybase_unbuffered_query' => [[1], $F_SECURING_SQL],
 
-  'raw'         => [[1], []],
-  'fetchSelect' => [[1], []],
-  'retrieve'    => [[1], []],
-  'exec'        => [[1], []],
-  'select'      => [[1], []],
-  'selectFirst' => [[1], []],
+  'raw'         => [[1], $F_SECURING_SQL],
+  'fetchSelect' => [[1], $F_SECURING_SQL],
+  'retrieve'    => [[1], $F_SECURING_SQL],
+  'exec'        => [[1], $F_SECURING_SQL],
+  'select'      => [[1], $F_SECURING_SQL],
+  'selectFirst' => [[1], $F_SECURING_SQL],
 ];
 
 // xpath injection
